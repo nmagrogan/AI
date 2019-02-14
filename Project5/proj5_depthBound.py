@@ -4,8 +4,10 @@ Team Member 1: Nathan Magrogan
 Team Member 2: Kaylee Moniz
 Submitted By Nathan Magrogan
 GU Username: nmagrogan
-File Name: proj5.pyGenerates first-level child states from an initial state of the 8-puzzle
-Reference: An Eight-Puzzle Solver in Python, https://gist.github.com/flatline/8382021
+File Name: proj5.py
+Generates first-level child states from an initial state of the 8-puzzle
+##Reference: An Eight-Puzzle Solver in Python, https://gist.github.com/flatline/8382021
+Preforms a depth bound search on the states of the 8-puzzle to solve the puzzle
 Usage: python proj5.py
 '''
 
@@ -27,12 +29,13 @@ class EightPuzzle:
                 print(row)
             print ("")
 
+    #displays one state
     def display_state(self,state):
         for row in state:
             print(row)
         print ("")
         
-    #returns (row,col) of value in state indexed by state_idx  
+    #returns (row,col) of value in state  
     def find_coord(self, value, state):
     
         for row in range(3):
@@ -42,7 +45,7 @@ class EightPuzzle:
         
                 
     #returns list of (row, col) tuples which can be swapped for blank
-    #these form the legal moves of the state indexed by state_idx
+    #these form the legal moves of the state
     def get_new_moves(self, state):
         row, col = self.find_coord(0,state) #get row, col of blank
         
@@ -57,8 +60,8 @@ class EightPuzzle:
             moves.append((row, col + 1))    #go right
         return moves
 
-    #Generates all child states for the state indexed by state_idx
-    #in state_lst.  Appends child states to the list
+    #Generates all child states for the state
+    #Appends child states to the listl also returns a list of the generated states
     def generate_states(self,state):
         
         #get legal moves
@@ -88,31 +91,36 @@ class EightPuzzle:
 
         return newChildren
 
+    #preforms a depth first search with a depth bound to solve an 8 puzzle
+    #given a starting state 
     def depth_first(self):
-        #def of varibles used by the search
+        #def of varibles used for the search algorithm
         start = self.state_lst[0]
         open_lst = []
         closed = []
         children = []
-        open_lst.append(start)
-        state_level = []
-        state_level.append(0)
+        state_level = [] #parrallel vector to open_list holds level int the graph of corresponding state in open_lst
         loop = 1
+        DEPTH_BOUND = 5
+        open_lst.append(start)
+        state_level.append(0)
         
-        
-
+    
         while(open_lst):
-            print("Try number: " + str(loop))
+            #displaying current state itteration number of algorithm and current level in graph
             loop += 1
             cur = open_lst.pop()
             cur_level = state_level.pop()
+            print("Try number: " + str(loop))
             print("Level of graph: "+ str(cur_level))
             self.display_state(cur)
+
+            #depth first algorithm
             if(cur == goal):
                 return 1
             closed.append(cur)
 
-            if(cur_level < 5):
+            if(cur_level < DEPTH_BOUND):    #implementation of depth bound wont generate states bellow a certain level
                 new_children = self.generate_states(cur)
                 for new_child in new_children:
                     children.append(new_child)
@@ -133,22 +141,15 @@ def main():
               [1,6,4],
               [7,0,5]]
 
-    test = [[1,2,3],
-            [8,0,4],
-            [7,6,5]]
-                   
+                       
     #initialize the list of states (state_lst) with the parent
     p = EightPuzzle(parent)
 
+    #preform depth first search on the puzzle
     print(p.depth_first())
     
     
-    
-    #Generate the states reachable from the parent, i.e., 0th state in state_lst
-    #p.generate_states(0)
 
-    #display all states in state_lst                    
-    #p.display()
     
 
 main()
