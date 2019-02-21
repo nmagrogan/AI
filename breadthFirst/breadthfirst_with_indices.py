@@ -4,9 +4,12 @@ Team Member 1: Nathan Magrogan
 Team Member 2: Kaylee Moniz
 Submitted By Nathan Magrogan
 GU Username: nmagrogan
-File Name: proj5.pyGenerates first-level child states from an initial state of the 8-puzzle
+using python 3
+File Name: proj6.py
+Generates first-level child states from an initial state of the 8-puzzle, and then does a breadth
+first search on the generated states to solve the 8puzzle
 Reference: An Eight-Puzzle Solver in Python, https://gist.github.com/flatline/8382021
-Usage: python proj5.py
+Usage: python proj6.py
 '''
 
 from copy import deepcopy
@@ -25,26 +28,28 @@ class EightPuzzle:
         for state in self.state_lst:
             for row in state:
                 print(row)
-            print ("")
+            print("")
 
-    def display_state(self,state):
-        for row in state:
+    #displays a state referenced by state_idx
+    def display_state(self, state_idx):
+        for row in self.state_lst[state_idx]:
             print(row)
-        print ("")
+        print("")
+        
         
     #returns (row,col) of value in state indexed by state_idx  
-    def find_coord(self, value, state):
+    def find_coord(self, value, state_idx):
     
         for row in range(3):
             for col in range(3):
-                if state[row][col] == value:
+                if self.state_lst[state_idx][row][col] == value:
                     return (row,col)
         
                 
     #returns list of (row, col) tuples which can be swapped for blank
     #these form the legal moves of the state indexed by state_idx
-    def get_new_moves(self, state):
-        row, col = self.find_coord(0,state) #get row, col of blank
+    def get_new_moves(self, state_idx):
+        row, col = self.find_coord(0,state_idx) #get row, col of blank
         
         moves = []
         if col > 0:
@@ -59,22 +64,20 @@ class EightPuzzle:
 
     #Generates all child states for the state indexed by state_idx
     #in state_lst.  Appends child states to the list
-    def generate_states(self,state):
+    def generate_states(self,state_idx):
         
         #get legal moves
-        move_lst = self.get_new_moves(state)
-
-        newChildren = []
+        move_lst = self.get_new_moves(state_idx)
        
         #blank is a tuple, holding coordinates of the blank tile
-        blank = self.find_coord(0,state)
+        blank = self.find_coord(0,state_idx)
 
         #tile is a tuple, holding coordinates of the tile to be swapped
         #with the blank
         for tile in move_lst:
             #create a new state using deep copy 
             #ensures that matrices are completely independent
-            child = deepcopy(state)
+            child = deepcopy(self.state_lst[state_idx])
 
             #move tile to position of the blank
             child[blank[0]][blank[1]] = child[tile[0]][tile[1]]
@@ -84,45 +87,37 @@ class EightPuzzle:
             
             #append child state to the list of states.
             self.state_lst.append(child)
-            newChildren.append(child)
 
-        return newChildren
 
-    def depth_first(self):
+    def bredth_first(self):
         #def of varibles used by the search
-        start = self.state_lst[0]
+        start = 0
         open_lst = []
         closed = []
-        children = []
         open_lst.append(start)
-        state_level = []
-        state_level.append(0)
-        loop = 1
+        loop = 0
         
         
 
         while(open_lst):
-            print("Try number: " + str(loop))
-            loop += 1
-            cur = open_lst.pop()
-            cur_level = state_level.pop()
-            print("Level of graph: "+ str(cur_level))
+            print("Iteration number: "+ str(loop))
+            loop +=1
+            cur = open_lst.pop(0)
             self.display_state(cur)
-            if(cur == goal):
+            if(self.state_lst[cur] == goal):
                 return 1
-            closed.append(cur)
+            closed.append(self.state_lst[cur])
 
-            if(cur_level < 5):
-                new_children = self.generate_states(cur)
-                for new_child in new_children:
-                    children.append(new_child)
-
-            while(children):
-                child = children.pop()
+            lower_index = len(self.state_lst)
+            self.generate_states(cur)
+            upper_index = len(self.state_lst)
+        
+            
+            for i  in range(lower_index,upper_index):
+                child = self.state_lst[i]
                 if(child not in open_lst and child not in closed):
-                    open_lst.append(child)
-                    state_level.append(cur_level+1)
-                   
+                    open_lst.append(i)
+                 
         return 0
             
 
@@ -136,11 +131,14 @@ def main():
     test = [[1,2,3],
             [8,0,4],
             [7,6,5]]
+
+
+    
                    
     #initialize the list of states (state_lst) with the parent
     p = EightPuzzle(parent)
 
-    print(p.depth_first())
+    print(p.bredth_first())
     
     
     

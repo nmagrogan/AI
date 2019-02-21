@@ -91,7 +91,7 @@ class EightPuzzle:
 
         return newChildren
 
-    def depth_first(self):
+    def bredth_first(self):
         #def of varibles used by the search
         start = self.state_lst[0]
         open_lst = []
@@ -133,7 +133,7 @@ def main():
     #initialize the list of states (state_lst) with the parent
     p = EightPuzzle(parent)
 
-    print(p.depth_first())
+    print(p.bredth_first())
     
     
     

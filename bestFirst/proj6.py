@@ -4,9 +4,12 @@ Team Member 1: Nathan Magrogan
 Team Member 2: Kaylee Moniz
 Submitted By Nathan Magrogan
 GU Username: nmagrogan
-File Name: proj5.pyGenerates first-level child states from an initial state of the 8-puzzle
+using python 3
+File Name: proj6.py
+Generates first-level child states from an initial state of the 8-puzzle, and then does a breadth
+first search on the generated states to solve the 8puzzle
 Reference: An Eight-Puzzle Solver in Python, https://gist.github.com/flatline/8382021
-Usage: python proj5.py
+Usage: python proj6.py
 '''
 
 from copy import deepcopy
@@ -88,40 +91,30 @@ class EightPuzzle:
 
         return newChildren
 
-    def depth_first(self):
+    def bredth_first(self):
         #def of varibles used by the search
         start = self.state_lst[0]
         open_lst = []
         closed = []
-        children = []
         open_lst.append(start)
-        state_level = []
-        state_level.append(0)
-        loop = 1
+        loop = 0
         
         
 
         while(open_lst):
-            print("Try number: " + str(loop))
-            loop += 1
-            cur = open_lst.pop()
-            cur_level = state_level.pop()
-            print("Level of graph: "+ str(cur_level))
+            print("Iteration number: "+ str(loop))
+            loop +=1
+            cur = open_lst.pop(0)
             self.display_state(cur)
             if(cur == goal):
                 return 1
             closed.append(cur)
-
-            if(cur_level < 5):
-                new_children = self.generate_states(cur)
-                for new_child in new_children:
-                    children.append(new_child)
-
+            
+            children = self.generate_states(cur)
             while(children):
-                child = children.pop()
+                child = children.pop(0)
                 if(child not in open_lst and child not in closed):
                     open_lst.append(child)
-                    state_level.append(cur_level+1)
                    
         return 0
             
@@ -140,7 +133,7 @@ def main():
     #initialize the list of states (state_lst) with the parent
     p = EightPuzzle(parent)
 
-    print(p.depth_first())
+    print(p.bredth_first())
     
     
     
