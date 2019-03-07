@@ -124,8 +124,10 @@ class EightPuzzle:
     def best_first(self):
         #def of varibles used by the search
         open_lst = [] #holds indexes of nodes on open
-        closed = [] #holds index of nodes on closed
+        open_states = []
+        closed = [] #holds closed state nodes
         open_lst.append(0)
+        open_states.append(self.state_lst[0].state)
         loop = 0
         
         
@@ -134,9 +136,10 @@ class EightPuzzle:
             print("Iteration number: "+ str(loop))
             loop +=1
             cur = open_lst.pop(0)
+            cur_state = open_states.pop(0)
             
             self.display_state(cur)
-            if(self.state_lst[cur].state == goal):
+            if(cur_state == goal):
                 return 1
 
             lower_index = len(self.state_lst)
@@ -145,22 +148,24 @@ class EightPuzzle:
 
             
             for child_index  in range(lower_index,upper_index): #for each child of cs
-                if(self.state_lst[child_index].state not in self.state_lst[open_lst].state or self.state_lst[child_index].state not in self.state_lst[closed].state):
-                    open_lst.append(self.state_lst[child_index])
+                if(cur_state not in open_states or
+                   cur_state not in closed):
+                    open_lst.append(child_index)
+                    open_states.append(self.state_lst[child_index].state)
                     
-
-                elif self.state_lst[child] in open_lst:
-                    old_index = open_lst.index(self.state_lst[child]) # correct???
-                    depth_child = 0
-                    #if g(child) < g(old_index):
-                        #g(child  open) = g(chid)
-                elif self.state_lst[child] in closed:
-                    print(3)
-                    #if g(child)< g(child on closed)
-                        #remove child from closed
-                        #euque child;
+                elif self.state_lst[child_index].state in open_states:
+                    old_index = open_states.index(self.state_lst[child_index].state) # correct???
+                    if self.state_lst[child_index].level < self.state_lst[old_index].level:
+                        self.state_lst[old_index].level = self.state_lst[child_index].level
+                        
+                elif self.state_lst[child_index].state in closed:
+                    old_index = closed.index(self.state_lst[child_index].state)
+                    if self.state_lst[child_index].level < self.state_lst[old_index].level:
+                        closed.pop(old_index)
+                        open_lst.append(child_index)
+                        open_states.append(self.state_lst[child_index].state)
             
-                closed.append(self.state_lst[cur_index])
+                closed.append(self.state_lst[cur].state)
                 #open sort
 
                  
