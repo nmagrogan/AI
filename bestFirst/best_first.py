@@ -18,6 +18,7 @@ goal = [[1,2,3],
         [8,0,4],
         [7,6,5]]
 
+
 class EightPuzzle:
     def __init__(self,parent):
         #state_lst now holds the root, the parent state
@@ -35,9 +36,9 @@ class EightPuzzle:
 
     #displays a state referenced by state_idx
     def display_state(self, state_idx):
+        print("Level in graph: "+ str(self.state_lvl[state_idx]))
         for row in self.state_lst[state_idx]:
             print(row)
-        print(self.state_lvl[state_idx])
         print("")
         
         
@@ -93,15 +94,31 @@ class EightPuzzle:
             self.state_lst.append(child)
             self.state_lvl.append(self.state_lvl[state_idx]+1)
 
+    #returns value of how "good" a certain state is
+    def heuristic(self,state_idx):
+        cost = 9 #9 = worst cost, all tiles in wrong place
+        state = self.state_lst[state_idx]
+        
+        #how many of the tiles are in the right place
+        for i in range(3):
+            for j in range(3):
+                if state[i][j] == goal[i][j]:
+                    cost -= 1
+
+        return cost
+        
+
 
     def best_first(self):
         #def of varibles used by the search
         start = self.state_lst[0]
         open_lst = []
         open_index = []
+        open_heuristic = []
         closed = []
         open_lst.append(start)
         open_index.append(0)
+        open_heuristic.append(self.heuristic(0))
         loop = 0
         
         
@@ -111,31 +128,36 @@ class EightPuzzle:
             loop +=1
             cur = open_lst.pop(0)
             cur_index = open_index.pop(0)
+            cur_heuristic = open_heuristic.pop(0)
             
             self.display_state(cur_index)
             if(cur == goal):
                 return 1
 
             lower_index = len(self.state_lst)
-            self.generate_states(cur)
+            self.generate_states(cur_index)
             upper_index = len(self.state_lst)
 
             
-            for child  in range(lower_index,upper_index): #for each child of cs
-                if(self.state_lst[child] not in open_lst and self.state_lst[child] not in closed):
-                    #f(child) = g(child) + h(child)
-                    open_lst.append(self.state_lst[child])
+            for child_index  in range(lower_index,upper_index): #for each child of cs
+                if(self.state_lst[child_index] not in open_lst or self.state_lst[child_index] not in closed):
+                    child_heuristic = self.heuristic(child_index) + self.state_lvl[child_index]
+                    open_lst.append(self.state_lst[child_index])
                     open_index.append(child)
+                    open_heuristic.append(child_heuristic)
 
                 elif self.state_lst[child] in open_lst:
-                    #if g(child) < g(child on open)
-                        #g(child on open) = g(chid)
+                    old_index = open_lst.index(self.state_lst[child]) # correct???
+                    depth_child = 
+                    if g(child) < g(old_index)
+                        g(child on open) = g(chid)
                 elif self.state_lst[child] in closed:
+                    print(3)
                     #if g(child)< g(child on closed)
                         #remove child from closed
                         #euque child;
             
-                closed.append(self.state_lst[cur])
+                closed.append(self.state_lst[cur_index])
                 #open sort
 
                  
