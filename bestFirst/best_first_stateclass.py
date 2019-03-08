@@ -1,18 +1,21 @@
 '''
 Class: CPSC 427 
 Team Member 1: Nathan Magrogan
-Team Member 2: Kaylee Moniz
+Team Member 2: none
 Submitted By Nathan Magrogan
 GU Username: nmagrogan
-using python 3
-File Name: proj6.py
-Generates first-level child states from an initial state of the 8-puzzle, and then does a breadth
+using python 2.7
+File Name: proj7.py
+
+Generates first-level child states from an initial state of the 8-puzzle, and then does a best
 first search on the generated states to solve the 8puzzle
+heuristic used: number of pieces in the right place.
 Reference: An Eight-Puzzle Solver in Python, https://gist.github.com/flatline/8382021
-Usage: python proj6.py
+Usage: python proj7.py
 '''
 
 from copy import deepcopy
+
 
 goal = [[1,2,3],
         [8,0,4],
@@ -35,6 +38,8 @@ class State:
                 if self.state[i][j] == goal[i][j]:
                     cost -= 1
         return cost
+    def get_value(self):
+        return(self.level + self.heuristic_value)
         
 
 
@@ -126,8 +131,9 @@ class EightPuzzle:
         open_lst = [] #holds indexes of nodes on open
         open_states = []
         closed = [] #holds closed state nodes
-        open_lst.append(0)
-        open_states.append(self.state_lst[0].state)
+        value = self.state_lst[0].get_value()
+        open_lst.append((value,0))
+        open_states.append((value,self.state_lst[0].state))
         loop = 0
         
         
@@ -137,36 +143,42 @@ class EightPuzzle:
             loop +=1
             cur = open_lst.pop(0)
             cur_state = open_states.pop(0)
+            print(cur)
             
-            self.display_state(cur)
-            if(cur_state == goal):
+            self.display_state(cur[1])
+            if(cur_state[1] == goal):
                 return 1
 
             lower_index = len(self.state_lst)
-            self.generate_states(cur)
+            self.generate_states(cur[1])
             upper_index = len(self.state_lst)
 
             
             for child_index  in range(lower_index,upper_index): #for each child of cs
-                if(cur_state not in open_states or
-                   cur_state not in closed):
-                    open_lst.append(child_index)
-                    open_states.append(self.state_lst[child_index].state)
+                if(self.state_lst[child_index] not in open_states or
+                   self.state_lst[child_index] not in closed):
+                    value = self.state_lst[child_index].get_value()
+                    open_lst.append((value,child_index))
+                    open_states.append((value,self.state_lst[child_index].state))
                     
                 elif self.state_lst[child_index].state in open_states:
                     old_index = open_states.index(self.state_lst[child_index].state) # correct???
                     if self.state_lst[child_index].level < self.state_lst[old_index].level:
-                        self.state_lst[old_index].level = self.state_lst[child_index].level
+                        open_lst[old_index][0] = self.state_lst[child_index].get_value()
                         
                 elif self.state_lst[child_index].state in closed:
                     old_index = closed.index(self.state_lst[child_index].state)
                     if self.state_lst[child_index].level < self.state_lst[old_index].level:
                         closed.pop(old_index)
-                        open_lst.append(child_index)
-                        open_states.append(self.state_lst[child_index].state)
+                        value = self.state_lst[child_index].get_value()
+                        open_lst.append((value,child_index))
+                        open_states.append((value,self.state_lst[child_index].state))
             
-                closed.append(self.state_lst[cur].state)
-                #open sort
+
+                closed.append(self.state_lst[cur[1]].state)
+                open_lst.sort()
+                open_states.sort()
+                
 
                  
         return 0
