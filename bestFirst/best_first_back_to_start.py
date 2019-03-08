@@ -50,14 +50,15 @@ class EightPuzzle:
         row, col = self.find_coord(0,state) #get row, col of blank
         
         moves = []
+        if col < 2:
+            moves.append((row, col + 1))    #go right
         if col > 0:
             moves.append((row, col - 1))    #go left
         if row > 0:
             moves.append((row - 1, col))    #go up
         if row < 2:
             moves.append((row + 1, col))    #go down
-        if col < 2:
-            moves.append((row, col + 1))    #go right
+        
         return moves
 
     #Generates all child states for the state
@@ -111,7 +112,7 @@ class EightPuzzle:
         closed = []
         children = []
         state_level = [] #parrallel vector to open_list holds level int the graph of corresponding state in open_lst
-        loop = 1
+        loop = 0
         DEPTH_BOUND = 5
         open_lst.append((self.heuristic(start),start))
         state_level.append((self.heuristic(start),0))
@@ -120,27 +121,45 @@ class EightPuzzle:
         while(open_lst):
             #displaying current state itteration number of algorithm and current level in graph
             loop += 1
-            cur = open_lst.pop()
-            cur_level = state_level.pop()
+            cur = open_lst.pop(0)
+            cur_level = state_level.pop(0)
             print("Try number: " + str(loop))
-            print("Level of graph: "+ str(cur_level))
-            self.display_state(cur)
+            print("Level of graph: "+ str(cur_level[1]))
+            self.display_state(cur[1])
 
             #depth first algorithm
-            if(cur == goal):
+            if(cur[1] == goal):
                 return 1
-            closed.append(cur)
+            
 
-            if(cur_level < DEPTH_BOUND):    #implementation of depth bound wont generate states bellow a certain level
-                new_children = self.generate_states(cur)
+            if(cur_level[1] < DEPTH_BOUND):    #implementation of depth bound wont generate states bellow a certain level
+                new_children = self.generate_states(cur[1])
+                child_level = cur_level[1] +1
                 for new_child in new_children:
-                    children.append(new_child)
+                    if new_child not in open_lst or closed:
+                        open_lst.append((self.heuristic(new_child),new_child))
+                        state_level.append((self.heuristic(new_child)+child_level,child_level))
 
-            while(children):
-                child = children.pop()
-                if(child not in open_lst and child not in closed):
-                    open_lst.append(child)
-                    state_level.append(cur_level+1)
+                        
+                    elif new_child in open_lst:
+                        open_index = open_lst.index(new_child)
+                        old_level = state_level[open_index]
+                        if child_level < old_level[1]:
+                            open_lst[open_index] = ((self.heuristic(child)+child_level,new_child))
+                            state_level[open_index] = ((self.heuristic(child)+child_level,child_level))
+
+                    elif new_child in closed:
+                        closed_index = closed.index(new_child)
+                        old_level = state_level[closed_index]
+                        if child_level < old_level[1]:
+                                closed.pop(closed_index)
+                                open_lst.append((self.heuristic(child)+child_level,new_child))
+                                state_level.append((self.heuristic(child)+child_level, child_level))
+
+                    closed.append(cur)
+                    open_lst.sort()
+                    state_level.sort()
+
                    
         return 0
             
