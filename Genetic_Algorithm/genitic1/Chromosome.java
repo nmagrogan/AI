@@ -10,8 +10,17 @@ public class Chromosome
  public Chromosome(int genesIn)
     {
         CH_numGenes = genesIn;
-        CH_gene     = new char[CH_numGenes];
+        CH_gene     = new char[CH_numGenes+1];
     }
+
+public boolean inChrom(char target){
+    boolean value = false;
+    for(int i=0;i < CH_numGenes;i++){
+        if(CH_gene[i] == target);
+        value = true;
+    }
+    return value;
+}
 
  public int GetNumGenes()
     {

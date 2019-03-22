@@ -133,11 +133,24 @@ public abstract class GA extends Object
         {
             Chromosome Chrom = new Chromosome(GA_numGenes);
             
-            for (int j = 0; j < GA_numGenes; j++)
+            for (int j = 0; j < GA_numGenes-1; j++)
                 { 
-                    letter = (char) (rnum.nextInt(26) + 97); //97 is the value 'a'  
+                    letter = (char) (j + 97); //97 is the value 'a'
                     Chrom.SetGene(j,letter);
                 }
+            Chrom.SetGene(GA_numGenes-1,'w');
+            
+            for(int i = 0; i < GA_numGenes-2; i++){
+                int randIndex = (int)(Math.random() * GA_numGenes-1);
+                char temp = Chrom.GetGene(i);
+                Chrom.SetGene(i,Chrom.GetGene(randIndex));
+                Chrom.SetGene(randIndex,temp);
+            }
+            
+
+            char temp = Chrom.GetGene(0);
+            Chrom.SetGene(GA_numGenes-1,temp);
+            
             Chrom.SetCost(0);
             GA_pop.add(Chrom);
         }

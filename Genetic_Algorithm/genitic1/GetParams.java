@@ -11,6 +11,7 @@ public class GetParams
  public GetParams(String fName, int numChromesI, int numChromes, int numGenes, 
                     double mutFact, int numIterations)
     {
+        
         GP_fileName = new String(fName);
         GP_params = new Parameters(numChromesI,numChromes,numGenes,mutFact,numIterations);
         OpenOutputFile();

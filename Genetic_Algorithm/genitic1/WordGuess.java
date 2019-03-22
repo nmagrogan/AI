@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 
 
-public class WordGuess extends GA
+public class WordGuess //extends GA
 {
  private String WG_target;
 
