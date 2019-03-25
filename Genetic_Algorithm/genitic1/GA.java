@@ -111,13 +111,17 @@ public abstract class GA extends Object
             
             int chromMut = 1 + (rnum.nextInt(GA_numChromes - 1));
             
-            int geneMut = rnum.nextInt(GA_numGenes); //pos of mutated gene
+            int geneMut = rnum.nextInt(7) +1; //pos of mutated gene
+
+            int geneMut2 = rnum.nextInt(7) +1;
             
-            char newGene = (char) (rnum.nextInt(26) + 97); //97 is the value 'a' 
             
+            //System.out.print(GA_numChromes);
             Chromosome newChromosome = GA_pop.remove(chromMut); //get chromosome
             
-            newChromosome.SetGene(geneMut,newGene);//mutate it
+            char temp = newChromosome.GetGene(geneMut);
+            newChromosome.SetGene(geneMut, newChromosome.GetGene(geneMut2));
+            newChromosome.SetGene(geneMut2,temp);
             
             GA_pop.add(newChromosome); //add mutated chromosome at the end
         }
@@ -151,6 +155,7 @@ public abstract class GA extends Object
             char temp = Chrom.GetGene(0);
             Chrom.SetGene(GA_numGenes-1,temp);
             
+
             Chrom.SetCost(0);
             GA_pop.add(Chrom);
         }

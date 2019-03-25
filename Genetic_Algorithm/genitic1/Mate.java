@@ -31,22 +31,46 @@ public class Mate
             MT_mother       =  population.get(MT_posMother);
             MT_child1       = new Chromosome(MT_numGenes);
             MT_child2       = new Chromosome(MT_numGenes);
-            Random rnum     = new Random();
-            int crossPoint  = rnum.nextInt(MT_numGenes);
+            boolean similar = true; 
+            int changeIndex = 0;
+            int prevIndex = 0;
 
-            //left side
-            for (int i = 0; i < crossPoint; i++)
-                {
-                    MT_child1.SetGene(i,MT_father.GetGene(i));
-                    MT_child2.SetGene(i,MT_mother.GetGene(i));
+            for(int i = 0;i < 9; i++){
+                MT_child1.SetGene(i, MT_father.GetGene(i));
+                MT_child2.SetGene(i, MT_mother.GetGene(i));
+            }
+            
+
+
+            char temp = MT_child2.GetGene(0);
+            MT_child2.SetGene(0, MT_child1.GetGene(0));
+            MT_child1.SetGene(0,temp);
+
+            while(similar){
+                for(int i = 0; i < 8;i++){
+                    if (temp == MT_child1.GetGene(i) && i != prevIndex){
+                        changeIndex = i;
+                        break;
+                    }
                 }
-    
-            //right side 
-            for (int i = crossPoint; i < MT_numGenes; i++)
-                {
-                    MT_child1.SetGene(i, MT_mother.GetGene(i));
-                    MT_child2.SetGene(i, MT_father.GetGene(i));
+
+
+                if(changeIndex == prevIndex){
+                    similar = false;
                 }
+
+                if (changeIndex != prevIndex){
+                    temp = MT_child2.GetGene(changeIndex);
+                    MT_child2.SetGene(changeIndex, MT_child1.GetGene(changeIndex));
+                    MT_child1.SetGene(changeIndex,temp);
+                    prevIndex = changeIndex;
+                }
+                
+            }
+
+            MT_child1.SetGene(8, MT_child1.GetGene(0));
+            MT_child2.SetGene(8, MT_child2.GetGene(0));
+
                 
             population.add(MT_posChild1,MT_child1);
             population.add(MT_posChild2,MT_child2);

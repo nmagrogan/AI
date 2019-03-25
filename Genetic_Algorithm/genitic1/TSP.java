@@ -11,7 +11,7 @@ public class TSP extends GA
  public TSP(String fileName, String startFile)
     {
        super(fileName,startFile);
-       TSP_target = new Integer(12);
+       TSP_target = 12;
        GA_numGenes = 9;
         try{
         distanceMatrix = ReadDistanceTable(startFile);
@@ -27,7 +27,7 @@ public class TSP extends GA
         */
         }
         catch(Exception e){
-            System.out.println("file not found");
+            System.out.println("file not found" + " " + startFile);
         }
 
         InitPop();
@@ -68,6 +68,7 @@ public int[][] ReadDistanceTable(String fileName)
                      }
                 }
             }
+
         return myArray;
     }
 
@@ -76,7 +77,6 @@ public int[][] ReadDistanceTable(String fileName)
     {
         char gene1 = 'a';
         char gene2 ='b';
-        char help = 'p';
         int val1 = 0;
         int val2 = 0;
         
@@ -87,22 +87,24 @@ public int[][] ReadDistanceTable(String fileName)
             
             
             gene1 = chrom.GetGene(0);
-
+            //chrom.DisplayGenes();
+            //System.out.print("\n");
             for (int j = 1; j < GA_numGenes ; j++){
                 
                 gene2 = chrom.GetGene(j);
-                help = chrom.GetGene(j+1);
 
                 val1 = (int)(gene1) - 97;
                 val2 = (int)(gene2) - 97;
                                
-
-                //System.out.print("\n" + j + " "+gene1 + " " + gene2 + " " + help +" " + val1 + " " + val2 + ' '+cost);
+                
+                //System.out.print( j + " "+gene1 + " " + gene2 +" " + val1 + " " + val2 + ' '+cost+ "\n");
                 cost = cost + distanceMatrix[val1][val2];
+
                 gene1 = gene2;
                 
             }
-            //System.exit(0);
+            //System.out.print('\n');
+            //if(i == 2){System.exit(0);}
 
 
             chrom.SetCost(cost);

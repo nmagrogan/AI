@@ -22,10 +22,12 @@ public class TSPTest
         System.out.println();
         //TSP1.DisplayParams(); //Uncomment to display the contents of the parameter file
         TSP1.DisplayPop(); //Uncomment to display the population before evolution
-        //TSP1.Evolve();
+        TSP1.Evolve();
         //WG1.DisplayPop(); Uncomment to display the population after evolution
         System.out.println();
         
     }
 }
+
+
 
