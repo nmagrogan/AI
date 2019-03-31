@@ -5,7 +5,7 @@ Team Member 1: Nathan Magrogan
 Team Member 2: None
 Submitted By Nathan Magrogan
 GU Username: nmagrogan
-File Name: proj9_abPrune.py
+File Name: proj9-abPrune.py
 Demonstrates AB Pruning - With depth bound:
 --reads file representation of a graph as input
 --converts the file to a dictionary representation of a tree
