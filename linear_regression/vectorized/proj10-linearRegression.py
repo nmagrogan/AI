@@ -32,7 +32,6 @@ def regression(X,Y,m,learning_rate,theta_init):
 def plot_results(points,theta):
     x_training = [point[0] for point in points]
     y_training = [point[1] for point in points]
-    #print theta
 
     y_prediction = [theta[1,0]*x + theta[0,0] for x in x_training]
     plt.plot(x_training,y_prediction,color='r')
@@ -46,22 +45,21 @@ def init():
     reader = list(csv.reader(open("input.csv", "rb"), delimiter=','))
     points = np.array(reader).astype('float')
 
+    #setting up vectors in correct form
     x1,Y = np.split(points,2,1)
     x1 = x1.transpose()
     x0 = np.ones(x1.size)
     X = np.vstack((x0,x1))
-
-
+    
     #set the initial parameters
     learning_rate = 0.0001 #step size
     theta_init = np.zeros(2) # initial theta guess
     theta_init = np.reshape(theta_init, (2,1)) 
-
     m = x1.size   #number of iterations of gradient across all points
+
     return X, Y, m, learning_rate, theta_init,points
 
 def main():
-
 	X,Y,m,learning_rate,theta_init,points = init()
 
 	theta = regression(X,Y,m,learning_rate,theta_init)
