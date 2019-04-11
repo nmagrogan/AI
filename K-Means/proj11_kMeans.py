@@ -53,51 +53,40 @@ def distEucl(vecA,vecB):
 
 def kMeans(dataMat, k, distMeas=distEucl, createCent=randCent):
     m = np.shape(dataMat)[0]  #how many items in data set
-    dimensions = np.shape(dataMat)[1]
     iterations = 0
     #create an mX2 natrix filled with zeros
     #each row stores centroi information for a point
     #col 0 stores the centroid index to which the point belongs
     #col 1 stores the distance from the point to the centroid
-    clusterAssment = np.mat(np.zeros((m,dimensions+1)))
+    clusterAssment = np.mat(np.zeros((m,2)))
     distance = []
-    distance_components = []
-    distance_index = []
 
     #create k randomly placed centroids
     centroids = createCent(dataMat,k)
 
     diff = centroids
 
-
     #your code goes here (I required about 15 lines)
-    while iterations < 10: #not all(diff < 0.001):
-        iterations = iterations +1
+    while iterations < 5: #not all(diff < 0.001):
+        iterations = iterations + 1
         centroids_old = centroids
 
         for i in range(len(dataMat)):
             distance = []
             for j in range(len(centroids)):
                 distance.append(distEucl(dataMat[i],centroids[j]))
-                distance_components.append(dataMat[i]-centroids[j])
 
             clusterAssment[i,0] = distance.index(min(distance))
 
-            for j in range(dimensions):
-                clusterAssment[i,j+1] = distance_components[distance.index(min(distance))][0,j]
-
-
         for i in range(len(centroids)):
             #distances = [clusterAssment[j,1:] for j in range(len(clusterAssment)) if int(clusterAssment[j,0]) == i]
-            distances = []
+            cluster = []
             for j in range(len(clusterAssment)):
                 if int(clusterAssment[j,0]) == i:
-                    distances.append(clusterAssment[j,1:])
+                    cluster.append(dataMat[j])
 
-
-            mean_distance = sum(distances) / float(len(distances))
+            mean_distance = sum(cluster) / float(len(cluster))
             centroids[i] = mean_distance
-
 
         diff = centroids_old - centroids
 
