@@ -1,5 +1,5 @@
 '''
-Class: CPSC 427 
+Class: CPSC 427
 Team Member 1: Nathan Magrogan
 Team Member 2: None
 Submitted By Nathan Magrogan
@@ -44,64 +44,73 @@ def randCent(dataMat,k):
 
 '''
 Compute the Euclidean distance between two points
-Each point is vector, composed of n values, idicating a point in n space 
+Each point is vector, composed of n values, idicating a point in n space
 '''
 def distEucl(vecA,vecB):
     return np.sqrt(np.sum(np.power(vecA - vecB,2)))
 
-    
+
 
 def kMeans(dataMat, k, distMeas=distEucl, createCent=randCent):
-	m = np.shape(dataMat)[0]  #how many items in data set
-	dimensions = np.shape(dataMat)[1]
-	iterations = 0
+    m = np.shape(dataMat)[0]  #how many items in data set
+    dimensions = np.shape(dataMat)[1]
+    iterations = 0
     #create an mX2 natrix filled with zeros
     #each row stores centroi information for a point
     #col 0 stores the centroid index to which the point belongs
     #col 1 stores the distance from the point to the centroid
-	clusterAssment = np.mat(np.zeros((m,dimensions+1)))
-	distance = []
-	distance_components = []
+    clusterAssment = np.mat(np.zeros((m,dimensions+1)))
+    distance = []
+    distance_components = []
+    distance_index = []
 
     #create k randomly placed centroids
-	centroids = createCent(dataMat,k) 
+    centroids = createCent(dataMat,k)
 
-	diff = centroids
+    diff = centroids
 
 
     #your code goes here (I required about 15 lines)
-	while iterations < 5: #not all(diff < 0.001):
-		iterations = iterations +1
-		centroids_old = centroids
+    while iterations < 10: #not all(diff < 0.001):
+        iterations = iterations +1
+        centroids_old = centroids
 
-		for i in range(len(dataMat)):
-			for j in range(len(centroids)):
-				distance.append(distEucl(dataMat[i],centroids[j]))
-				distance_components.append(dataMat[i]-centroids[j])
-			clusterAssment[i,0] = distance.index(min(distance))
-			for j in range(dimensions):
-				clusterAssment[i,j+1] = distance_components[distance.index(min(distance))][0,j]
+        for i in range(len(dataMat)):
+            distance = []
+            for j in range(len(centroids)):
+                distance.append(distEucl(dataMat[i],centroids[j]))
+                distance_components.append(dataMat[i]-centroids[j])
 
+            clusterAssment[i,0] = distance.index(min(distance))
 
-		for i in range(len(centroids)):
-			distances = [clusterAssment[j,1] for j in range(len(clusterAssment)) if clusterAssment[j,0] == i]
-			print distances
-			mean_distance = sum(distances) / len(distances)
-			centroids[i] = mean_distance
-			
-
-		diff = centroids_old - centroids
+            for j in range(dimensions):
+                clusterAssment[i,j+1] = distance_components[distance.index(min(distance))][0,j]
 
 
-	return centroids, iterations #is the number of iterations required
+        for i in range(len(centroids)):
+            #distances = [clusterAssment[j,1:] for j in range(len(clusterAssment)) if int(clusterAssment[j,0]) == i]
+            distances = []
+            for j in range(len(clusterAssment)):
+                if int(clusterAssment[j,0]) == i:
+                    distances.append(clusterAssment[j,1:])
+
+
+            mean_distance = sum(distances) / float(len(distances))
+            centroids[i] = mean_distance
+
+
+        diff = centroids_old - centroids
+
+
+    return centroids, iterations #is the number of iterations required
 
 def plot_results(dataMat, centroids):
-    #your code goes here.  The trick is to transfrom the incoming matrices 
+    #your code goes here.  The trick is to transfrom the incoming matrices
     #to lists
     #On the same scatter plot, plot the points and the centroids
     #The centroid points should be a different shape and color than the data
-    #points   
-    
+    #points
+
 	x = [dataMat[i,0] for i in range(len(dataMat))]
 	y = [dataMat[i,1] for i in range(len(dataMat))]
 
@@ -113,8 +122,8 @@ def plot_results(dataMat, centroids):
 	plt.title("K-means data")
 	plt.show()
 
-    
-    
+
+
 
 def main():
 	k = 4
@@ -133,7 +142,7 @@ def main():
 	plot_results(dataMat, centroids)
 
 	'''
-	#test code for auxiliary functions 
+	#test code for auxiliary functions
 	print "point 0"
 	print dataMat[0]
 	print "point 1"
@@ -146,6 +155,5 @@ def main():
 	print distEucl(dataMat[0], dataMat[1])
 	'''
 
-    
-main()
 
+main()
