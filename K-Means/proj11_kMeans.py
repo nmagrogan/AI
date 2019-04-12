@@ -80,11 +80,7 @@ def kMeans(dataMat, k, distMeas=distEucl, createCent=randCent):
             clusterAssment[i,0] = distance.index(min(distance))
 
         for i in range(len(centroids)):
-            #distances = [clusterAssment[j,1:] for j in range(len(clusterAssment)) if int(clusterAssment[j,0]) == i]
-            cluster = []
-            for j in range(len(clusterAssment)):
-                if int(clusterAssment[j,0]) == i:
-                    cluster.append(dataMat[j])
+            cluster = [dataMat[j] for j in range(len(clusterAssment)) if int(clusterAssment[j,0])== i]
 
             if len(cluster) != 0:
                 mean_distance = sum(cluster) / float(len(cluster))
