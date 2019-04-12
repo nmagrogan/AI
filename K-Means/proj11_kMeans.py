@@ -64,12 +64,13 @@ def kMeans(dataMat, k, distMeas=distEucl, createCent=randCent):
     #create k randomly placed centroids
     centroids = createCent(dataMat,k)
 
-    diff = centroids
+    diff = centroids > 10
+
 
     #your code goes here (I required about 15 lines)
-    while iterations < 5: #not all(diff < 0.001):
+    while not diff.all():
         iterations = iterations + 1
-        centroids_old = centroids
+        centroids_old = centroids.copy()
 
         for i in range(len(dataMat)):
             distance = []
@@ -85,64 +86,43 @@ def kMeans(dataMat, k, distMeas=distEucl, createCent=randCent):
                 if int(clusterAssment[j,0]) == i:
                     cluster.append(dataMat[j])
 
-            mean_distance = sum(cluster) / float(len(cluster))
-            centroids[i] = mean_distance
+            if len(cluster) != 0:
+                mean_distance = sum(cluster) / float(len(cluster))
+                centroids[i] = mean_distance
 
-        diff = centroids_old - centroids
+        diff = centroids_old - centroids < .000001
 
 
     return centroids, iterations #is the number of iterations required
 
-def plot_results(dataMat, centroids):
+def plot_results(dataMat, centroids, iterations):
     #your code goes here.  The trick is to transfrom the incoming matrices
     #to lists
     #On the same scatter plot, plot the points and the centroids
     #The centroid points should be a different shape and color than the data
     #points
 
-	x = [dataMat[i,0] for i in range(len(dataMat))]
-	y = [dataMat[i,1] for i in range(len(dataMat))]
+    x = [dataMat[i,0] for i in range(len(dataMat))]
+    y = [dataMat[i,1] for i in range(len(dataMat))]
 
-	xc = [centroids[i,0] for i in range(len(centroids))]
-	yc = [centroids[i,1] for i in range(len(centroids))]
+    xc = [centroids[i,0] for i in range(len(centroids))]
+    yc = [centroids[i,1] for i in range(len(centroids))]
 
-	plt.scatter(x,y,color='g')
-	plt.scatter(xc,yc,color='r',marker='x')
-	plt.title("K-means data")
-	plt.show()
+    plt.scatter(x,y,color='g')
+    plt.scatter(xc,yc,color='r',marker='x')
+    plt.title("K-means data\nNum iterations :" + " " + str(iterations))
+    plt.show()
 
 
 
 
 def main():
-	k = 4
-	dataMat = loadData("testSet.txt")
-	'''
-    vectA = [1.245,5]
-    vectB = [5.12,8]
-    vectA = np.mat(vectA)
-    vectB = np.mat(vectB)
-    print distEucl(vectA,vectB)
-    exit()
-	'''
+    k = 4
+    dataMat = loadData("testSet.txt")
 
-	centroids, iterations = kMeans(dataMat, k, distEucl, randCent)
+    centroids, iterations = kMeans(dataMat, k, distEucl, randCent)
 
-	plot_results(dataMat, centroids)
-
-	'''
-	#test code for auxiliary functions
-	print "point 0"
-	print dataMat[0]
-	print "point 1"
-	print dataMat[1]
-	print
-	print "centroids"
-	print randCent(dataMat,k)
-	print
-	print "distance from point 0 to point 1"
-	print distEucl(dataMat[0], dataMat[1])
-	'''
+    plot_results(dataMat, centroids,iterations)
 
 
 main()
