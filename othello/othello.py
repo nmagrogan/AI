@@ -58,23 +58,23 @@ class Othello:
 
     #probes in a give direction from a point returns index of furthest same tile, or -1 if no valid move
     def probe(self,letter_pos,number_pos,dir,player_name):
-        if dir == 0: #other letter space is below probe down
-            for i in range(8,number_pos,-1):
+        if dir == 0: #blank space below probe from top
+            for i in range(1,number_pos,1):
                 if self.board[i][letter_pos] == player_name:
                     return (i-1,letter_pos)
             return -1
-        elif dir == 1: #other letter aboce, probe up
-            for i in range(1,number_pos,1):
+        elif dir == 1: #blank space above probe from botto
+            for i in range(8,number_pos,-1):
                 if self.board[i][letter_pos] == player_name:
                     return (i+1,letter_pos)
             return -1
-        elif dir == 2: # other letter is right proble right
-            for i in range(8,letter_pos,-1):
+        elif dir == 2: # blank space right probe from the left
+            for i in range(1,letter_pos,1):
                 if self.board[number_pos][i] == player_name:
                     return (number_pos,i-1)
             return -1
-        elif dir == 3: #other letter is left, probe left
-            for i in range(1,letter_pos,1):
+        elif dir == 3: #blank space on the left probe from the right
+            for i in range(8,letter_pos,-1):
                 if self.board[number_pos][i] == player_name:
                     return (number_pos,i+1)
             return -1
@@ -95,9 +95,12 @@ class Othello:
                     for k in range(len(adjacent)):
                         #if the adjacent tile is a blank space, probe in opposite
                         #dir to see if you can place a tile there
-                        if adjacent[k] == player_name:
+                        if adjacent[k] == "0":
                             new_index = self.probe(i+1,j+1,k,player_name)
+                            print "-----"
                             print new_index
+                            print (i+1,j+1)
+                            print "------"
                             if new_index != -1:
                                 if k == 0:
                                     next_moves.append((i,j+1))
@@ -112,24 +115,83 @@ class Othello:
 
     #checks to see if a valid position was givent for a new tile placement
     #will request new input untill a valid position is given
-    def check_pos(self,letter_pos,number_pos,player_name):
+    def check_pos(self,letter_pos,number_pos,player_name,next_moves):
         letter_pos_int = VALID_COLUMN.index(letter_pos)+1
         #generate all of next possible moves, check if new move is one of them
-        next_moves = self.generate_legal_moves(player_name)
-        move = (letter_pos_int,number_pos)
-
+        move = (number_pos,letter_pos_int)
 
         while move not in next_moves:
             print "Invalid move, try agian"
             letter_pos,number_pos = self.input_pos(player_name)
             letter_pos_int = VALID_COLUMN.index(letter_pos)+1
-            move = (letter_pos_int,number_pos)
+            move = (number_pos,letter_pos_int)
             print move
             print next_moves
 
 
 
         return letter_pos,number_pos
+
+    #probes in a dir to see if it can filp one way, then flips tiles
+    def flip_probe(self,letter_pos,number_pos,dir,player_name):
+        good = 0
+        if player_name == "B":
+            opposite_name = "W"
+        else:
+            opposite_name = "B"
+
+
+        if dir == 0: #look down
+            for i in range(8,number_pos,-1):
+                if self.board[i][letter_pos] == player_name:
+                    good = 1
+                if good == 1 and self.board[i][letter_pos] == opposite_name:
+                    self.board[i][letter_pos] = player_name
+                    if player_name == "B":
+                        self.score[0] = self.score[0]+1
+                        self.score[1] = self.score[1]-1
+                    else:
+                        self.score[1] = self.score[1]+1
+                        self.score[0] = self.score[0]-1
+
+        elif dir == 1: #look up
+            for i in range(1,number_pos,1):
+                if self.board[i][letter_pos] == player_name:
+                    good = 1
+                if good == 1 and self.board[i][letter_pos] == opposite_name:
+                    self.board[i][letter_pos] = player_name
+                    if player_name == "B":
+                        self.score[0] = self.score[0]+1
+                        self.score[1] = self.score[1]-1
+                    else:
+                        self.score[1] = self.score[1]+1
+                        self.score[0] = self.score[0]-1
+        elif dir == 2: #look right
+            for i in range(1,letter_pos,1):
+                if self.board[number_pos][i] == player_name:
+                    good = 1
+                if good ==1 and self.board[number_pos][i] == opposite_name:
+                    self.board[number_pos][i] = player_name
+                    if player_name == "B":
+                        self.score[0] = self.score[0]+1
+                        self.score[1] = self.score[1]-1
+                    else:
+                        self.score[1] = self.score[1]+1
+                        self.score[0] = self.score[0]-1
+        elif dir == 3: #look left
+            for i in range(8,letter_pos,-1):
+                if self.board[number_pos][i] == player_name:
+                    good = 1
+                if good ==1 and self.board[number_pos][i] == opposite_name:
+                    self.board[number_pos][i] = player_name
+                    if player_name == "B":
+                        self.score[0] = self.score[0]+1
+                        self.score[1] = self.score[1]-1
+                    else:
+                        self.score[1] = self.score[1]+1
+                        self.score[0] = self.score[0]-1
+
+
 
     #flips tiles based newest move
     def flip_tiles(self,letter_pos,number_pos,player_name):
@@ -140,14 +202,13 @@ class Othello:
             opposite_name = "W"
         else:
             opposite_name = "B"
-        print "------"
-        print adjacent_tiles
+
         for i in range(len(adjacent_tiles)):
             if adjacent_tiles[i] == opposite_name:
-                new_index = self.probe(letter_pos_int,number_pos,i,player_name)
-                print new_index
+                self.flip_probe(letter_pos_int,number_pos,i,player_name)
+                #print new_index
 
-        exit()
+
 
 
     #runs through a single turn for a player
@@ -157,18 +218,18 @@ class Othello:
 
         #checks if initial input was in a valid position, if not it wil
         #request a new input till a valid one is given
-        letter_pos,number_pos = self.check_pos(letter_pos,number_pos,player_name)
+        legal_moves = self.generate_legal_moves(player_name)
+        letter_pos,number_pos = self.check_pos(letter_pos,number_pos,player_name,legal_moves)
 
         if player_name == "B":
             self.score[0] = self.score[0]+1
         else:
             self.score[1] = self.score[1]+1
 
-        #flips whatever other tiles need to be flipped and changes score
-        self.flip_tiles(letter_pos,number_pos,player_name)
-
         #puts tile on board
         self.board[number_pos][VALID_COLUMN.index(letter_pos)+1] = player_name
+        #flips whatever other tiles need to be flipped and changes score
+        self.flip_tiles(letter_pos,number_pos,player_name)
 
 
 
