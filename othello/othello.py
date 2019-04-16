@@ -33,6 +33,8 @@ class Othello:
     def display_board(self):
             for row in self.board:
                 print(row)
+            print "Score B = " + str(self.score[0])
+            print "Score W = " + str(self.score[1])
             print("")
 
     #asks for user input for a new pos to place a tile
@@ -52,14 +54,18 @@ class Othello:
 
 
         if number_pos == 8 and letter_pos_int == 8:
-            adjacent_tiles = [self.board[number_pos-1][letter_pos_int], #above
+            adjacent_tiles = ["edge", #below
+                              self.board[number_pos-1][letter_pos_int], #above
+                              "edge", #right
                               self.board[number_pos][letter_pos_int-1]] #left
         elif letter_pos_int == 8:
             adjacent_tiles = [self.board[number_pos+1][letter_pos_int], #below
                               self.board[number_pos-1][letter_pos_int], #above
+                              "edge", #right
                               self.board[number_pos][letter_pos_int-1]] #left
         elif number_pos == 8:
-            adjacent_tiles = [self.board[number_pos-1][letter_pos_int], #above
+            adjacent_tiles = ["edge", #below
+                              self.board[number_pos-1][letter_pos_int], #above
                               self.board[number_pos][letter_pos_int+1], #right
                               self.board[number_pos][letter_pos_int-1]] #left
         else:
@@ -110,6 +116,73 @@ class Othello:
         return next_moves
 
 
+    def flip_tiles(self,number_pos,letter_pos,player_name):
+        if player_name == "B":
+            opposite_name = "W"
+        else:
+            opposite_name = "B"
+
+        adjacent_tiles = self.get_adj_tiles(number_pos,letter_pos)
+        for i in range(len(adjacent_tiles)):
+            if adjacent_tiles[i] == opposite_name:
+                if i == 0:
+                    for l in range(number_pos+1,9,1):
+                        if self.board[l][letter_pos] == player_name:
+                            if l == 8 or self.board[l+1][letter_pos] == "0":
+                                for j in range(l,number_pos,-1):
+                                    if self.board[j][letter_pos] == opposite_name:
+                                        self.board[j][letter_pos] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+
+                elif i == 1:
+                    for l in range(number_pos-1,0,-1):
+                        if self.board[l][letter_pos] == player_name:
+                            if l == 1 or self.board[l-1][letter_pos] == "0":
+                                for j in range(l,number_pos,1):
+                                    if self.board[j][letter_pos] == opposite_name:
+                                        self.board[j][letter_pos] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+
+                elif i == 2:
+                    for l in range(letter_pos+1,9,1):
+                        if self.board[number_pos][l] == player_name:
+                            if l == 8 or self.board[number_pos][l+1] == "0":
+                                for j in range(l,letter_pos,-1):
+                                    if self.board[number_pos][j] == opposite_name:
+                                        self.board[number_pos][j] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+
+                elif i == 3:
+                    for l in range(letter_pos-1,0,-1):
+                        if self.board[number_pos][l] == player_name:
+                            if l == 1 or self.board[number_pos][l-1] == "0":
+                                for j in range(l,letter_pos,1):
+                                    if self.board[number_pos][j] == opposite_name:
+                                        self.board[number_pos][j] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+
+
+
 
 
     #runs through a single turn for a player
@@ -141,7 +214,7 @@ class Othello:
         #puts tile on board
         self.board[number_pos][VALID_COLUMN.index(letter_pos)+1] = player_name
         #flips whatever other tiles need to be flipped and changes score
-        #self.flip_tiles(letter_pos,number_pos,player_name)
+        self.flip_tiles(number_pos,letter_pos_int,player_name)
 
 
 
