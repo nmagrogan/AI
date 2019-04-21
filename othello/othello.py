@@ -72,7 +72,11 @@ class Othello:
             adjacent_tiles = [self.board[number_pos+1][letter_pos_int], #below
                               self.board[number_pos-1][letter_pos_int], #above
                               self.board[number_pos][letter_pos_int+1], #right
-                              self.board[number_pos][letter_pos_int-1]] #left
+                              self.board[number_pos][letter_pos_int-1], #left
+                              self.board[number_pos+1][letter_pos_int+1], #below right
+                              self.board[number_pos+1][letter_pos_int-1], #below left
+                              self.board[number_pos-1][letter_pos_int+1], #up right
+                              self.board[number_pos-1][letter_pos_int-1]] #up left
 
 
         return adjacent_tiles
@@ -139,7 +143,7 @@ class Othello:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
 
-                elif i == 1:
+                if i == 1:
                     for l in range(number_pos-1,0,-1):
                         if self.board[l][letter_pos] == player_name:
                             if l == 1 or self.board[l-1][letter_pos] == "0":
@@ -153,7 +157,7 @@ class Othello:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
 
-                elif i == 2:
+                if i == 2:
                     for l in range(letter_pos+1,9,1):
                         if self.board[number_pos][l] == player_name:
                             if l == 8 or self.board[number_pos][l+1] == "0":
@@ -167,7 +171,7 @@ class Othello:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
 
-                elif i == 3:
+                if i == 3:
                     for l in range(letter_pos-1,0,-1):
                         if self.board[number_pos][l] == player_name:
                             if l == 1 or self.board[number_pos][l-1] == "0":
@@ -221,11 +225,13 @@ class Othello:
 def main():
 
     game = Othello()
-    game.display_board()
-    game.player_turn("B")
-    game.display_board()
-    game.player_turn("W")
-    game.display_board()
+
+    for i in range(2):
+        game.display_board()
+        game.player_turn("B")
+        game.display_board()
+        game.player_turn("W")
+
 
 
 
