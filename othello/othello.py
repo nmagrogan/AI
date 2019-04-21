@@ -10,22 +10,24 @@ making moves in othello
 '''
 
 #some constants
-VALID_COLUMN = ["A","B","C","D","E","F","G","H"]
+VALID_COLUMN = ["a","b","c","d","e","f","g","h"]
 VALID_ROW = [1,2,3,4,5,6,7,8]
+VALID_ROW_CHAR = ["1","2","3","4","5","6","7","8"]
 
 
 class Othello:
     #creates a starting board
     def __init__(self):
-        self.board = [[" ","A","B","C","D","E","F","G","H"],
-                      ["1","0","0","0","0","0","0","0","0"],
-                      ["2","0","0","0","0","0","0","0","0"],
-                      ["3","0","0","0","0","0","0","0","0"],
-                      ["4","0","0","0","B","W","0","0","0"],
-                      ["5","0","0","0","W","B","0","0","0"],
-                      ["6","0","0","0","0","0","0","0","0"],
-                      ["7","0","0","0","0","0","0","0","0"],
-                      ["8","0","0","0","0","0","0","0","0"],]
+        self.board = [["X","a","b","c","d","e","f","g","h","X"],
+                      ["1","_","_","_","_","_","_","_","_","X"],
+                      ["2","_","_","_","_","_","_","_","_","X"],
+                      ["3","_","_","_","_","_","_","_","_","X"],
+                      ["4","_","_","_","B","W","_","_","_","X"],
+                      ["5","_","_","_","W","B","_","_","_","X"],
+                      ["6","_","_","_","_","_","_","_","_","X"],
+                      ["7","_","_","_","_","_","_","_","_","X"],
+                      ["8","_","_","_","_","_","_","_","_","X"],
+                      ["X","X","X","X","X","X","X","X","X","X"]]
         #score where 0 is score for black and 1 is score for white
         self.score = [2,2]
 
@@ -53,30 +55,15 @@ class Othello:
     def get_adj_tiles(self,number_pos,letter_pos_int):
 
 
-        if number_pos == 8 and letter_pos_int == 8:
-            adjacent_tiles = ["edge", #below
-                              self.board[number_pos-1][letter_pos_int], #above
-                              "edge", #right
-                              self.board[number_pos][letter_pos_int-1]] #left
-        elif letter_pos_int == 8:
-            adjacent_tiles = [self.board[number_pos+1][letter_pos_int], #below
-                              self.board[number_pos-1][letter_pos_int], #above
-                              "edge", #right
-                              self.board[number_pos][letter_pos_int-1]] #left
-        elif number_pos == 8:
-            adjacent_tiles = ["edge", #below
-                              self.board[number_pos-1][letter_pos_int], #above
-                              self.board[number_pos][letter_pos_int+1], #right
-                              self.board[number_pos][letter_pos_int-1]] #left
-        else:
-            adjacent_tiles = [self.board[number_pos+1][letter_pos_int], #below
-                              self.board[number_pos-1][letter_pos_int], #above
-                              self.board[number_pos][letter_pos_int+1], #right
-                              self.board[number_pos][letter_pos_int-1], #left
-                              self.board[number_pos+1][letter_pos_int+1], #below right
-                              self.board[number_pos+1][letter_pos_int-1], #below left
-                              self.board[number_pos-1][letter_pos_int+1], #up right
-                              self.board[number_pos-1][letter_pos_int-1]] #up left
+
+        adjacent_tiles = [self.board[number_pos+1][letter_pos_int], #below
+                          self.board[number_pos-1][letter_pos_int], #above
+                          self.board[number_pos][letter_pos_int+1], #right
+                          self.board[number_pos][letter_pos_int-1], #left
+                          self.board[number_pos+1][letter_pos_int+1], #below right
+                          self.board[number_pos+1][letter_pos_int-1], #below left
+                          self.board[number_pos-1][letter_pos_int+1], #up right
+                          self.board[number_pos-1][letter_pos_int-1]] #up left
 
 
         return adjacent_tiles
@@ -93,7 +80,7 @@ class Othello:
 
         for i in range(1,9,1): #number
             for j in range(1,9,1): #letter
-                if self.board[i][j] == "0":
+                if self.board[i][j] == "_":
                     adjacent_tiles = self.get_adj_tiles(i,j)
                     for k in range(len(adjacent_tiles)):
                         if adjacent_tiles[k] == opposte_name:
@@ -117,6 +104,38 @@ class Othello:
                                     if self.board[i][l] == player_name:
                                         next_moves.append((i,j))
                                         break
+                            elif k == 4:
+                                l = 1
+                                while self.board[i+l][j+l] != "X":
+                                    if self.board[i+l][j+l] == player_name:
+                                        next_moves.append((i,j))
+                                        break
+                                    l  = l +1
+                            elif k == 5:
+                                l = 1
+                                while self.board[i+l][j-l] != "X" and self.board[i+l][j-l] not in VALID_COLUMN:
+                                    if self.board[i+l][j-l] == player_name:
+                                        next_moves.append((i,j))
+                                        break
+                                    l  = l +1
+                            elif k == 6:
+                                l = 1
+                                while self.board[i-l][j+l] != "X" and self.board[i-l][j+l] not in VALID_COLUMN:
+                                    if self.board[i-l][j+l] == player_name:
+                                        next_moves.append((i,j))
+                                        break
+                                    l  = l +1
+                            elif k == 7:
+                                l = 1
+                                #print (i,j)
+                                while self.board[i-l][j-l] not in VALID_ROW_CHAR and self.board[i-l][j-l] not in VALID_COLUMN and self.board[i-l][j-l] != "X":
+                                    #print self.board[i-l][j-l]
+                                    if self.board[i-l][j-l] == player_name:
+                                        next_moves.append((i,j))
+                                        break
+                                    l  = l +1
+
+
         return next_moves
 
 
@@ -132,7 +151,7 @@ class Othello:
                 if i == 0:
                     for l in range(number_pos+1,9,1):
                         if self.board[l][letter_pos] == player_name:
-                            if l == 8 or self.board[l+1][letter_pos] == "0":
+                            if l == 8 or self.board[l+1][letter_pos] == "_":
                                 for j in range(l,number_pos,-1):
                                     if self.board[j][letter_pos] == opposite_name:
                                         self.board[j][letter_pos] = player_name
@@ -146,7 +165,7 @@ class Othello:
                 if i == 1:
                     for l in range(number_pos-1,0,-1):
                         if self.board[l][letter_pos] == player_name:
-                            if l == 1 or self.board[l-1][letter_pos] == "0":
+                            if l == 1 or self.board[l-1][letter_pos] == "_":
                                 for j in range(l,number_pos,1):
                                     if self.board[j][letter_pos] == opposite_name:
                                         self.board[j][letter_pos] = player_name
@@ -160,7 +179,7 @@ class Othello:
                 if i == 2:
                     for l in range(letter_pos+1,9,1):
                         if self.board[number_pos][l] == player_name:
-                            if l == 8 or self.board[number_pos][l+1] == "0":
+                            if l == 8 or self.board[number_pos][l+1] == "_":
                                 for j in range(l,letter_pos,-1):
                                     if self.board[number_pos][j] == opposite_name:
                                         self.board[number_pos][j] = player_name
@@ -174,7 +193,7 @@ class Othello:
                 if i == 3:
                     for l in range(letter_pos-1,0,-1):
                         if self.board[number_pos][l] == player_name:
-                            if l == 1 or self.board[number_pos][l-1] == "0":
+                            if l == 1 or self.board[number_pos][l-1] == "_":
                                 for j in range(l,letter_pos,1):
                                     if self.board[number_pos][j] == opposite_name:
                                         self.board[number_pos][j] = player_name
@@ -198,6 +217,7 @@ class Othello:
         #checks if initial input was in a valid position, if not it wil
         #request a new input till a valid one is given
         legal_moves = self.generate_next_moves(player_name)
+        print legal_moves
 
         move = (number_pos,letter_pos_int)
 
