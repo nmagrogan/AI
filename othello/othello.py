@@ -203,6 +203,68 @@ class Othello:
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                if i == 4:
+                    l = 1
+                    while self.board[number_pos+l][letter_pos+l] != "X":
+                        if self.board[number_pos+l][letter_pos+l] == player_name:
+                            if self.board[number_pos+l][letter_pos+l] == "_":
+                                for j in range(l,1,-1):
+                                    if self.board[number_pos+j][letter_pos+j] == opposite_name:
+                                        self.board[number_pos+j][letter_pos+j] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+                        l = l+1
+                if i == 5:
+                    l = 1
+                    while self.board[number_pos+l][letter_pos-l] != "X" and self.board[number_pos+l][letter_pos-l] not in VALID_COLUMN:
+                        if self.board[number_pos+l][letter_pos-l] == player_name:
+                            if self.board[number_pos+l][letter_pos-l] == "_":
+                                for j in range(l,1,-1):
+                                    if self.board[number_pos+j][letter_pos-j] == opposite_name:
+                                        self.board[number_pos+j][letter_pos-j] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+                        l = l+1
+
+                if i == 6:
+                    l = 1
+                    while self.board[number_pos-l][letter_pos+l] != "X" and self.board[number_pos-l][letter_pos+l] not in VALID_COLUMN:
+                        if self.board[number_pos-l][letter_pos+l] == player_name:
+                            if self.board[number_pos-l][letter_pos+l] == "_":
+                                for j in range(l,1,-1):
+                                    if self.board[number_pos-j][letter_pos+j] == opposite_name:
+                                        self.board[number_pos-j][letter_pos+j] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+                        l = l+1
+
+                if i == 7:
+                    l = 1
+                    while self.board[number_pos-l][letter_pos-l] not in VALID_ROW_CHAR and self.board[number_pos-l][letter_pos-l] not in VALID_COLUMN and self.board[i-l][j-l] != "X":
+                        if self.board[number_pos-l][letter_pos-l] == player_name:
+                            if self.board[number_pos-l][letter_pos-l] == "_":
+                                for j in range(l,1,-1):
+                                    if self.board[number_pos-j][letter_pos-j] == opposite_name:
+                                        self.board[number_pos-j][letter_pos-j] = player_name
+                                        if player_name == "B":
+                                            self.score[0] = self.score[0]+1
+                                            self.score[1] = self.score[1]-1
+                                        else:
+                                            self.score[1] = self.score[1]+1
+                                            self.score[0] = self.score[0]-1
+                        l = l+1
 
 
 
@@ -217,7 +279,7 @@ class Othello:
         #checks if initial input was in a valid position, if not it wil
         #request a new input till a valid one is given
         legal_moves = self.generate_next_moves(player_name)
-        print legal_moves
+        #print legal_moves
 
         move = (number_pos,letter_pos_int)
 
