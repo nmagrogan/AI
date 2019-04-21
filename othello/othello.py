@@ -207,8 +207,8 @@ class Othello:
                     l = 1
                     while self.board[number_pos+l][letter_pos+l] != "X":
                         if self.board[number_pos+l][letter_pos+l] == player_name:
-                            if self.board[number_pos+l][letter_pos+l] == "_":
-                                for j in range(l,1,-1):
+                            if self.board[number_pos+l+1][letter_pos+l+1] == "_":
+                                for j in range(l,0,-1):
                                     if self.board[number_pos+j][letter_pos+j] == opposite_name:
                                         self.board[number_pos+j][letter_pos+j] = player_name
                                         if player_name == "B":
@@ -222,8 +222,9 @@ class Othello:
                     l = 1
                     while self.board[number_pos+l][letter_pos-l] != "X" and self.board[number_pos+l][letter_pos-l] not in VALID_COLUMN:
                         if self.board[number_pos+l][letter_pos-l] == player_name:
-                            if self.board[number_pos+l][letter_pos-l] == "_":
-                                for j in range(l,1,-1):
+                            if self.board[number_pos+l+1][letter_pos-l-1] == "_":
+                                for j in range(l,0,-1):
+                                    print (number_pos+j,letter_pos-j)
                                     if self.board[number_pos+j][letter_pos-j] == opposite_name:
                                         self.board[number_pos+j][letter_pos-j] = player_name
                                         if player_name == "B":
@@ -238,8 +239,8 @@ class Othello:
                     l = 1
                     while self.board[number_pos-l][letter_pos+l] != "X" and self.board[number_pos-l][letter_pos+l] not in VALID_COLUMN:
                         if self.board[number_pos-l][letter_pos+l] == player_name:
-                            if self.board[number_pos-l][letter_pos+l] == "_":
-                                for j in range(l,1,-1):
+                            if self.board[number_pos-l-1][letter_pos+l+1] == "_":
+                                for j in range(l,0,-1):
                                     if self.board[number_pos-j][letter_pos+j] == opposite_name:
                                         self.board[number_pos-j][letter_pos+j] = player_name
                                         if player_name == "B":
@@ -252,10 +253,10 @@ class Othello:
 
                 if i == 7:
                     l = 1
-                    while self.board[number_pos-l][letter_pos-l] not in VALID_ROW_CHAR and self.board[number_pos-l][letter_pos-l] not in VALID_COLUMN and self.board[i-l][j-l] != "X":
+                    while self.board[number_pos-l][letter_pos-l] not in VALID_ROW_CHAR and self.board[number_pos-l][letter_pos-l] not in VALID_COLUMN and self.board[number_pos-l][letter_pos-l] != "X":
                         if self.board[number_pos-l][letter_pos-l] == player_name:
-                            if self.board[number_pos-l][letter_pos-l] == "_":
-                                for j in range(l,1,-1):
+                            if self.board[number_pos-l-1][letter_pos-l-1] == "_":
+                                for j in range(l,0,-1):
                                     if self.board[number_pos-j][letter_pos-j] == opposite_name:
                                         self.board[number_pos-j][letter_pos-j] = player_name
                                         if player_name == "B":
@@ -308,7 +309,7 @@ def main():
 
     game = Othello()
 
-    for i in range(2):
+    for i in range(10):
         game.display_board()
         game.player_turn("B")
         game.display_board()
