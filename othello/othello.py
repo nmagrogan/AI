@@ -14,22 +14,41 @@ VALID_COLUMN = ["a","b","c","d","e","f","g","h"]
 VALID_ROW = [1,2,3,4,5,6,7,8]
 VALID_ROW_CHAR = ["1","2","3","4","5","6","7","8"]
 
+BOARD_A = [["X","a","b","c","d","e","f","g","h","X"],
+              ["1","_","_","_","_","_","_","_","_","X"],
+              ["2","_","_","_","_","_","_","_","_","X"],
+              ["3","_","_","_","_","_","_","_","_","X"],
+              ["4","_","_","_","B","W","_","_","_","X"],
+              ["5","_","_","_","W","B","_","_","_","X"],
+              ["6","_","_","_","_","_","_","_","_","X"],
+              ["7","_","_","_","_","_","_","_","_","X"],
+              ["8","_","_","_","_","_","_","_","_","X"],
+              ["X","X","X","X","X","X","X","X","X","X"]]
+
+BOARD_B = [["X","a","b","c","d","e","f","g","h","X"],
+              ["1","_","_","_","_","_","_","_","_","X"],
+              ["2","_","_","_","_","_","_","_","_","X"],
+              ["3","_","_","_","_","_","_","_","_","X"],
+              ["4","_","_","_","W","B","_","_","_","X"],
+              ["5","_","_","_","B","W","_","_","_","X"],
+              ["6","_","_","_","_","_","_","_","_","X"],
+              ["7","_","_","_","_","_","_","_","_","X"],
+              ["8","_","_","_","_","_","_","_","_","X"],
+              ["X","X","X","X","X","X","X","X","X","X"]]
+
 
 class Othello:
     #creates a starting board
     def __init__(self):
-        self.board = [["X","a","b","c","d","e","f","g","h","X"],
-                      ["1","_","_","_","_","_","_","_","_","X"],
-                      ["2","_","_","_","_","_","_","_","_","X"],
-                      ["3","_","_","_","_","_","_","_","_","X"],
-                      ["4","_","_","_","B","W","_","_","_","X"],
-                      ["5","_","_","_","W","B","_","_","_","X"],
-                      ["6","_","_","_","_","_","_","_","_","X"],
-                      ["7","_","_","_","_","_","_","_","_","X"],
-                      ["8","_","_","_","_","_","_","_","_","X"],
-                      ["X","X","X","X","X","X","X","X","X","X"]]
+        self.board = BOARD_A
         #score where 0 is score for black and 1 is score for white
         self.score = [2,2]
+
+    def swap_board(self):
+        if self.board == BOARD_A:
+            self.board = BOARD_B
+        else:
+            self.board = BOARD_A
 
     #displays the board
     def display_board(self):
@@ -140,6 +159,7 @@ class Othello:
 
 
     def flip_tiles(self,number_pos,letter_pos,player_name):
+
         if player_name == "B":
             opposite_name = "W"
         else:
@@ -151,7 +171,7 @@ class Othello:
                 if i == 0:
                     for l in range(number_pos+1,9,1):
                         if self.board[l][letter_pos] == player_name:
-                            if l == 8 or self.board[l+1][letter_pos] == "_":
+                            if l == 8 or self.board[l+1][letter_pos] == "_" or self.board[l+1][letter_pos] == opposite_name:
                                 for j in range(l,number_pos,-1):
                                     if self.board[j][letter_pos] == opposite_name:
                                         self.board[j][letter_pos] = player_name
@@ -165,7 +185,7 @@ class Othello:
                 if i == 1:
                     for l in range(number_pos-1,0,-1):
                         if self.board[l][letter_pos] == player_name:
-                            if l == 1 or self.board[l-1][letter_pos] == "_":
+                            if l == 1 or self.board[l-1][letter_pos] == "_" or self.board[l-1][letter_pos] == opposite_name:
                                 for j in range(l,number_pos,1):
                                     if self.board[j][letter_pos] == opposite_name:
                                         self.board[j][letter_pos] = player_name
@@ -179,7 +199,7 @@ class Othello:
                 if i == 2:
                     for l in range(letter_pos+1,9,1):
                         if self.board[number_pos][l] == player_name:
-                            if l == 8 or self.board[number_pos][l+1] == "_":
+                            if l == 8 or self.board[number_pos][l+1] == "_" or self.board[number_pos][l+1] == opposite_name:
                                 for j in range(l,letter_pos,-1):
                                     if self.board[number_pos][j] == opposite_name:
                                         self.board[number_pos][j] = player_name
@@ -193,7 +213,7 @@ class Othello:
                 if i == 3:
                     for l in range(letter_pos-1,0,-1):
                         if self.board[number_pos][l] == player_name:
-                            if l == 1 or self.board[number_pos][l-1] == "_":
+                            if l == 1 or self.board[number_pos][l-1] == "_" or self.board[number_pos][l-1] == opposite_name :
                                 for j in range(l,letter_pos,1):
                                     if self.board[number_pos][j] == opposite_name:
                                         self.board[number_pos][j] = player_name
@@ -207,7 +227,7 @@ class Othello:
                     l = 1
                     while self.board[number_pos+l][letter_pos+l] != "X":
                         if self.board[number_pos+l][letter_pos+l] == player_name:
-                            if self.board[number_pos+l+1][letter_pos+l+1] == "_":
+                            if self.board[number_pos+l+1][letter_pos+l+1] == "_" or self.board[number_pos+l+1][letter_pos+l+1] == opposite_name:
                                 for j in range(l,0,-1):
                                     if self.board[number_pos+j][letter_pos+j] == opposite_name:
                                         self.board[number_pos+j][letter_pos+j] = player_name
@@ -222,9 +242,8 @@ class Othello:
                     l = 1
                     while self.board[number_pos+l][letter_pos-l] != "X" and self.board[number_pos+l][letter_pos-l] not in VALID_COLUMN:
                         if self.board[number_pos+l][letter_pos-l] == player_name:
-                            if self.board[number_pos+l+1][letter_pos-l-1] == "_":
+                            if self.board[number_pos+l+1][letter_pos-l-1] == "_" or self.board[number_pos+l+1][letter_pos-l-1] == opposite_name :
                                 for j in range(l,0,-1):
-                                    print (number_pos+j,letter_pos-j)
                                     if self.board[number_pos+j][letter_pos-j] == opposite_name:
                                         self.board[number_pos+j][letter_pos-j] = player_name
                                         if player_name == "B":
@@ -239,7 +258,7 @@ class Othello:
                     l = 1
                     while self.board[number_pos-l][letter_pos+l] != "X" and self.board[number_pos-l][letter_pos+l] not in VALID_COLUMN:
                         if self.board[number_pos-l][letter_pos+l] == player_name:
-                            if self.board[number_pos-l-1][letter_pos+l+1] == "_":
+                            if self.board[number_pos-l-1][letter_pos+l+1] == "_" or self.board[number_pos-l-1][letter_pos+l+1] == opposte_name :
                                 for j in range(l,0,-1):
                                     if self.board[number_pos-j][letter_pos+j] == opposite_name:
                                         self.board[number_pos-j][letter_pos+j] = player_name
@@ -255,7 +274,7 @@ class Othello:
                     l = 1
                     while self.board[number_pos-l][letter_pos-l] not in VALID_ROW_CHAR and self.board[number_pos-l][letter_pos-l] not in VALID_COLUMN and self.board[number_pos-l][letter_pos-l] != "X":
                         if self.board[number_pos-l][letter_pos-l] == player_name:
-                            if self.board[number_pos-l-1][letter_pos-l-1] == "_":
+                            if self.board[number_pos-l-1][letter_pos-l-1] == "_" or self.board[number_pos-l-1][letter_pos-l-1] == opposite_name:
                                 for j in range(l,0,-1):
                                     if self.board[number_pos-j][letter_pos-j] == opposite_name:
                                         self.board[number_pos-j][letter_pos-j] = player_name
@@ -273,13 +292,19 @@ class Othello:
 
     #runs through a single turn for a player
     def player_turn(self,player_name):
+
+        legal_moves = self.generate_next_moves(player_name)
+        if legal_moves == []:
+            print "No valid moves"
+            return 1
+
         #initial input
         letter_pos, number_pos = self.input_pos(player_name)
         letter_pos_int = VALID_COLUMN.index(letter_pos)+1
 
         #checks if initial input was in a valid position, if not it wil
         #request a new input till a valid one is given
-        legal_moves = self.generate_next_moves(player_name)
+
         #print legal_moves
 
         move = (number_pos,letter_pos_int)
@@ -303,17 +328,74 @@ class Othello:
         #flips whatever other tiles need to be flipped and changes score
         self.flip_tiles(number_pos,letter_pos_int,player_name)
 
+        return 0
+
 
 
 def main():
 
     game = Othello()
 
-    for i in range(10):
+    game.display_board()
+
+    change_board = raw_input("Would you like to change board config (y/n): " )
+    if change_board == "y":
+        game.swap_board()
+
+    game.display_board()
+
+    player_roles = raw_input("Do you want to be B or W? ")
+    while player_roles not in ["B","W"]:
+        player_roles = raw_input("invalid answer (B or W) ")
+
+
+    if player_roles == "W":
+        print "AI: I am about to make a move"
+        approve = raw_input("P do you approve (y/n)? ")
+        while approve not in ["y","n"]:
+            approve = raw_input("y/n: ")
+
+        old_board_config = game.board.copy()
+        b_moves = game.player_turn("B")
+
+        if b_moves == []:
+            print "AI: i cannot make a move :("
+
+        good_move = raw_input("Was this move done correctly? (y/n) ")
+        while good_move not in ["y","n"]:
+            good_move = raw_input("(y/n) ")
+
+        if good_move == "n"
+            print "move not done correctly "
+            
+
+
+
+
+
+
+    for i in range(15):
         game.display_board()
-        game.player_turn("B")
+        b_moves = game.player_turn("B")
         game.display_board()
-        game.player_turn("W")
+        w_moves = game.player_turn("W")
+
+        if b_moves == 1 and w_moves == 1:
+            print "No more possible moves, game over"
+            break
+
+    game.display_board()
+
+
+    print "B final score = " + str(game.score[0])
+    print "W final score = " + str(game.score[1])
+
+    if game.score[0] > game.score[1]:
+        print "Black wins!"
+    elif game.score[0] < game.score[1]:
+        print "White wins!"
+    else:
+        print "tie game"
 
 
 
