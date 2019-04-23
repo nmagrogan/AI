@@ -9,6 +9,8 @@ code for an othello game, lets playes go back and fourth
 making moves in othello
 '''
 
+import copy
+
 #some constants
 VALID_COLUMN = ["a","b","c","d","e","f","g","h"]
 VALID_ROW = [1,2,3,4,5,6,7,8]
@@ -341,8 +343,9 @@ def main():
     change_board = raw_input("Would you like to change board config (y/n): " )
     if change_board == "y":
         game.swap_board()
+        game.display_board()
 
-    game.display_board()
+
 
     player_roles = raw_input("Do you want to be B or W? ")
     while player_roles not in ["B","W"]:
@@ -355,19 +358,27 @@ def main():
         while approve not in ["y","n"]:
             approve = raw_input("y/n: ")
 
-        old_board_config = game.board.copy()
+        old_board_config = copy.deepcopy(game.board)
+        old_score = copy.deepcopy(game.score)
+        print "This is where AI would return (Letter,Number) of next move"
         b_moves = game.player_turn("B")
+
 
         if b_moves == []:
             print "AI: i cannot make a move :("
+
+        game.display_board()
 
         good_move = raw_input("Was this move done correctly? (y/n) ")
         while good_move not in ["y","n"]:
             good_move = raw_input("(y/n) ")
 
-        if good_move == "n"
+        if good_move == "n":
             print "move not done correctly "
-            
+            game.board = old_board_config
+            game.score = old_score
+            game.display_board()
+
 
 
 
