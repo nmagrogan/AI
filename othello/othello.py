@@ -160,7 +160,10 @@ class Othello:
         return next_moves
 
 
-    def flip_tiles(self,number_pos,letter_pos,player_name):
+    def flip_tiles(self,number_pos,letter_pos,player_name,old_board_config,old_score):
+
+        flip_helper = [0,0,0,0,0,0,0,0]
+        flip_helper2 = [0,0,0,0,0,0,0,0]
 
         if player_name == "B":
             opposite_name = "W"
@@ -171,89 +174,126 @@ class Othello:
         for i in range(len(adjacent_tiles)):
             if adjacent_tiles[i] == opposite_name:
                 if i == 0:
+                    print "hello"
                     for l in range(number_pos+1,9,1):
                         if self.board[l][letter_pos] == player_name:
                             if l == 8 or self.board[l+1][letter_pos] == "_" or self.board[l+1][letter_pos] == opposite_name:
-                                for j in range(l,number_pos,-1):
+
+                                for j in range(l,number_pos-1,-1):
                                     if self.board[j][letter_pos] == opposite_name:
-                                        self.board[j][letter_pos] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[j][letter_pos] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+
 
                 if i == 1:
                     for l in range(number_pos-1,0,-1):
                         if self.board[l][letter_pos] == player_name:
                             if l == 1 or self.board[l-1][letter_pos] == "_" or self.board[l-1][letter_pos] == opposite_name:
-                                for j in range(l,number_pos,1):
+
+                                for j in range(l,number_pos+1,1):
                                     if self.board[j][letter_pos] == opposite_name:
-                                        self.board[j][letter_pos] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[j][letter_pos] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+
+
 
                 if i == 2:
                     for l in range(letter_pos+1,9,1):
                         if self.board[number_pos][l] == player_name:
                             if l == 8 or self.board[number_pos][l+1] == "_" or self.board[number_pos][l+1] == opposite_name:
-                                for j in range(l,letter_pos,-1):
+
+                                for j in range(l,letter_pos-1,-1):
                                     if self.board[number_pos][j] == opposite_name:
-                                        self.board[number_pos][j] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[number_pos][j] = "$"
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
 
                 if i == 3:
                     for l in range(letter_pos-1,0,-1):
                         if self.board[number_pos][l] == player_name:
                             if l == 1 or self.board[number_pos][l-1] == "_" or self.board[number_pos][l-1] == opposite_name :
-                                for j in range(l,letter_pos,1):
+
+                                for j in range(l,letter_pos+1,1):
                                     if self.board[number_pos][j] == opposite_name:
-                                        self.board[number_pos][j] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[number_pos][j] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+
                 if i == 4:
                     l = 1
                     while self.board[number_pos+l][letter_pos+l] != "X":
                         if self.board[number_pos+l][letter_pos+l] == player_name:
                             if self.board[number_pos+l+1][letter_pos+l+1] == "_" or self.board[number_pos+l+1][letter_pos+l+1] == opposite_name:
-                                for j in range(l,0,-1):
+
+                                for j in range(l,-1,-1):
                                     if self.board[number_pos+j][letter_pos+j] == opposite_name:
-                                        self.board[number_pos+j][letter_pos+j] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[number_pos+j][letter_pos+j] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+
+                                        #self.board[number_pos+j][letter_pos+j] = player_name
                         l = l+1
                 if i == 5:
                     l = 1
                     while self.board[number_pos+l][letter_pos-l] != "X" and self.board[number_pos+l][letter_pos-l] not in VALID_COLUMN:
                         if self.board[number_pos+l][letter_pos-l] == player_name:
                             if self.board[number_pos+l+1][letter_pos-l-1] == "_" or self.board[number_pos+l+1][letter_pos-l-1] == opposite_name :
-                                for j in range(l,0,-1):
+                                for j in range(l,-1,-1):
                                     if self.board[number_pos+j][letter_pos-j] == opposite_name:
-                                        self.board[number_pos+j][letter_pos-j] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[number_pos+j][letter_pos-j] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+
+                                        #self.board[number_pos+j][letter_pos-j] = player_name
                         l = l+1
 
                 if i == 6:
@@ -261,15 +301,22 @@ class Othello:
                     while self.board[number_pos-l][letter_pos+l] != "X" and self.board[number_pos-l][letter_pos+l] not in VALID_COLUMN:
                         if self.board[number_pos-l][letter_pos+l] == player_name:
                             if self.board[number_pos-l-1][letter_pos+l+1] == "_" or self.board[number_pos-l-1][letter_pos+l+1] == opposte_name :
-                                for j in range(l,0,-1):
+
+                                for j in range(l,-1,-1):
                                     if self.board[number_pos-j][letter_pos+j] == opposite_name:
-                                        self.board[number_pos-j][letter_pos+j] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[number_pos-j][letter_pos+j] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+                                        #self.board[number_pos-j][letter_pos+j] = player_name
+
                         l = l+1
 
                 if i == 7:
@@ -277,23 +324,81 @@ class Othello:
                     while self.board[number_pos-l][letter_pos-l] not in VALID_ROW_CHAR and self.board[number_pos-l][letter_pos-l] not in VALID_COLUMN and self.board[number_pos-l][letter_pos-l] != "X":
                         if self.board[number_pos-l][letter_pos-l] == player_name:
                             if self.board[number_pos-l-1][letter_pos-l-1] == "_" or self.board[number_pos-l-1][letter_pos-l-1] == opposite_name:
-                                for j in range(l,0,-1):
+                                for j in range(l,-1,-1):
                                     if self.board[number_pos-j][letter_pos-j] == opposite_name:
-                                        self.board[number_pos-j][letter_pos-j] = player_name
                                         if player_name == "B":
                                             self.score[0] = self.score[0]+1
                                             self.score[1] = self.score[1]-1
                                         else:
                                             self.score[1] = self.score[1]+1
                                             self.score[0] = self.score[0]-1
+                                    self.board[number_pos-j][letter_pos-j] = "$"
+
+
+                                flip_helper[i] = 1
+                                flip_helper2[i] = l
+                                        #self.board[number_pos-j][letter_pos-j] = player_name
+
                         l = l+1
+
+        return flip_helper,flip_helper2
+
+
+    def flip2(self,number_pos,letter_pos,player_name,flip_helper,flip_helper2):
+
+
+        if player_name == "B":
+            opposite_name = "W"
+        else:
+            opposite_name = "B"
+
+        for i in range(len(flip_helper)):
+            if flip_helper[i] == 1:
+                l = flip_helper2[i]
+                if i == 0:
+                    for j in range(l,number_pos-1,-1):
+                        if self.board[j][letter_pos] == "$":
+                            self.board[j][letter_pos] = player_name
+                if i == 1:
+                    for j in range(l,number_pos+1,1):
+                        if self.board[j][letter_pos] == "$":
+                            self.board[j][letter_pos] = player_name
+                if i == 2:
+                    for j in range(l,letter_pos-1,-1):
+                        if self.board[number_pos][j] == "$":
+                            self.board[number_pos][j] = player_name
+                if i ==3:
+                    for j in range(l,letter_pos+1,1):
+                        if self.board[number_pos][j] == "$":
+                            self.board[number_pos][j] = player_name
+                if i == 4:
+                    for j in range(l,-1,-1):
+                        if self.board[number_pos+j][letter_pos+j] == "$":
+                            self.board[number_pos+j][letter_pos+j] = player_name
+                if i == 5:
+                    for j in range(l,-1,-1):
+                        if self.board[number_pos+j][letter_pos-j] == "$":
+                            self.board[number_pos+j][letter_pos-j] = player_name
+                if i == 6:
+                    for j in range(l,-1,-1):
+                        if self.board[number_pos-j][letter_pos+j] == "$":
+                            self.board[number_pos-j][letter_pos+j] = player_name
+                if i == 7:
+                    for j in range(l,-1,-1):
+                        if self.board[number_pos-j][letter_pos-j] == "$":
+                            self.board[number_pos-j][letter_pos-j] = player_name
+
+
+
+
+
 
 
 
 
 
     #runs through a single turn for a player
-    def player_turn(self,player_name):
+    def player_turn(self,player_name,old_board_config,old_score):
 
         legal_moves = self.generate_next_moves(player_name)
         if legal_moves == []:
@@ -328,7 +433,21 @@ class Othello:
         #puts tile on board
         self.board[number_pos][VALID_COLUMN.index(letter_pos)+1] = player_name
         #flips whatever other tiles need to be flipped and changes score
-        self.flip_tiles(number_pos,letter_pos_int,player_name)
+        flip_helper,flip_helper2 = self.flip_tiles(number_pos,letter_pos_int,player_name,old_board_config,old_score)
+
+        self.display_board()
+        good_move = raw_input("Was this move done correctly? (y/n) ")
+        while good_move not in ["y","n"]:
+            good_move = raw_input("(y/n) ")
+
+        if good_move == "n":
+            print "move not done correctly "
+            self.board = old_board_config
+            self.score = old_score
+            self.display_board()
+            exit()
+
+        self.flip2(number_pos,letter_pos_int,player_name,flip_helper,flip_helper2)
 
         return 0
 
@@ -353,49 +472,42 @@ def main():
 
 
     if player_roles == "W":
-        print "AI: I am about to make a move"
-        approve = raw_input("P do you approve (y/n)? ")
-        while approve not in ["y","n"]:
-            approve = raw_input("y/n: ")
+        for i in range(15):
+            print "AI: I am about to make a move"
+            approve = raw_input("P do you approve (y/n)? ")
+            while approve not in ["y","n"]:
+                approve = raw_input("y/n: ")
 
-        old_board_config = copy.deepcopy(game.board)
-        old_score = copy.deepcopy(game.score)
-        print "This is where AI would return (Letter,Number) of next move"
-        b_moves = game.player_turn("B")
+            old_board_config = copy.deepcopy(game.board)
+            old_score = copy.deepcopy(game.score)
+            print "This is where AI would return (Letter,Number) of next move"
 
+            b_moves = game.player_turn("B",old_board_config,old_score)
 
-        if b_moves == []:
-            print "AI: i cannot make a move :("
+            if b_moves == 1:
+                print "AI: i cannot make a move :("
 
-        game.display_board()
-
-        good_move = raw_input("Was this move done correctly? (y/n) ")
-        while good_move not in ["y","n"]:
-            good_move = raw_input("(y/n) ")
-
-        if good_move == "n":
-            print "move not done correctly "
-            game.board = old_board_config
-            game.score = old_score
             game.display_board()
 
+            old_board_config = copy.deepcopy(game.board)
+            old_score = copy.deepcopy(game.score)
+            print "P it is now your turn to make a move"
+            w_moves = game.player_turn("W",old_board_config,old_score)
+
+            if w_moves  == 1:
+                print "player cannot make a move"
+
+            if b_moves == 1 and w_moves == 1:
+                print "no more possible moves, game over"
+                break
 
 
+            game.display_board()
+    if player_roles == "B":
+        print "black game"
 
 
-
-
-    for i in range(15):
-        game.display_board()
-        b_moves = game.player_turn("B")
-        game.display_board()
-        w_moves = game.player_turn("W")
-
-        if b_moves == 1 and w_moves == 1:
-            print "No more possible moves, game over"
-            break
-
-    game.display_board()
+    
 
 
     print "B final score = " + str(game.score[0])
