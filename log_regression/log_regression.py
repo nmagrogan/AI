@@ -27,6 +27,13 @@ def regression(theta_init,learning_rate,m,X,g,Z,Y):
 
 	return theta
 
+def decision_boundary(X,theta):
+
+	x = [X[:,0].item(i) for i in range(len(X))]
+	xVals = np.array([min(x),max(x)])
+	yVals = -1/theta[2]*(theta[1]*xVals + theta[0])
+	yVals = [yVals[0,0],yVals[0,1]]
+	return xVals, yVals
 
 
 def plot_results(X,y,theta,theta_given):
@@ -34,17 +41,13 @@ def plot_results(X,y,theta,theta_given):
 	points0 = [[X[i,0],X[i,1]] for i in range(len(X)) if y[i] == 0]
 	points1 = [[X[i,0],X[i,1]] for i in range(len(X)) if y[i] == 1]
 
-	'''
-	print points0
-	print "----------------------------------"
-	print points1
-	exit()
-	'''
+
+	xVals,yVals = decision_boundary(X,theta_given)
 
 
-	#print theta
 
 	#y_prediction = [theta[1,0]*x + theta[0,0] for x in x_training]
+	plt.plot(xVals,yVals)
 	plt.scatter(*zip(*points0),color='y', label ="rejected")
 	plt.scatter(*zip(*points1),color='k',marker="+",label = "accepted")
 	plt.title("Admitted/Not Admitted")
