@@ -1,5 +1,5 @@
 '''
-Class: CPSC 427 
+Class: CPSC 427
 Team Member 1: Nathan Magrogan
 Team Member 2: None
 Submitted By Nathan Magrogan
@@ -24,48 +24,65 @@ def regression(theta_init,learning_rate,m,X,g,Z,Y):
 		theta_old = theta
 		theta = theta - (learning_rate/m)*np.matmul(np.transpose(X), g*Z - Y)
 		diff = theta - theta_old #compare for convergance
-		
+
 	return theta
 
 
 
-def plot_results(points,theta):
-    x_training = [point[0] for point in points]
-    y_training = [point[1] for point in points]
-    #print theta
+def plot_results(X,y,theta,theta_given):
 
-    y_prediction = [theta[1,0]*x + theta[0,0] for x in x_training]
-    plt.plot(x_training,y_prediction,color='r')
-    plt.scatter(x_training,y_training,color='g')
-    plt.title("Vectorized Linear Regression")
-    plt.show()
+	points0 = [[X[i,0],X[i,1]] for i in range(len(X)) if y[i] == 0]
+	points1 = [[X[i,0],X[i,1]] for i in range(len(X)) if y[i] == 1]
+
+	'''
+	print points0
+	print "----------------------------------"
+	print points1
+	exit()
+	'''
+
+
+	#print theta
+
+	#y_prediction = [theta[1,0]*x + theta[0,0] for x in x_training]
+	plt.scatter(*zip(*points0),color='y', label ="rejected")
+	plt.scatter(*zip(*points1),color='k',marker="+",label = "accepted")
+	plt.title("Admitted/Not Admitted")
+	plt.xlabel("Exam 1 Score")
+	plt.ylabel("Exam 2 Score")
+	plt.legend()
+
+	plt.show()
 
 
 def init():
-    #read file into list of x,y coordinates, one set of coords per line
-    reader = list(csv.reader(open("input.csv", "rb"), delimiter=','))
-    points = np.array(reader).astype('float')
+	#read file into list of x,y coordinates, one set of coords per line
+	reader = list(csv.reader(open("data1.txt", "rb"), delimiter=','))
+	data = np.mat(reader).astype('float')
 
-    x1,Y = np.split(points,2,1)
-    x1 = x1.transpose()
-    x0 = np.ones(x1.size)
-    X = np.vstack((x0,x1))
+	theta_given = list(csv.reader(open("theta.txt", "rb"),delimiter=' '))
+	theta_given = np.mat(theta_given).astype('float')
 
 
-    #set the initial parameters
-    learning_rate = 0.0001 #step size
-    theta_init = np.zeros(2) # initial theta guess
-    theta_init = np.reshape(theta_init, (2,1)) 
 
-    m = x1.size   #number of iterations of gradient across all points
-    return X, Y, m, learning_rate, theta_init,points
+	X = data[:,:2]
+	y = data[:,2]
+
+	#set the initial parameters
+	learning_rate = 0.0001 #step size
+	theta_init = np.zeros(3) # initial theta guess
+	theta_init = np.reshape(theta_init, (3,1))
+
+	m = X.size   #number of iterations of gradient across all points
+	return X, y, m, learning_rate, theta_init, theta_given
 
 def main():
 
-	X,Y,m,learning_rate,theta_init,points = init()
+	X,y,m,learning_rate,theta_init,theta_given = init()
 
-	theta = regression(X,Y,m,learning_rate,theta_init)
+	theta = theta_init
+	#theta = regression(X,Y,m,learning_rate,theta_init)
 
-	plot_results(points,theta)
+	plot_results(X,y,theta,theta_given)
 
 main()
