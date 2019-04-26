@@ -14,22 +14,12 @@ Usage :  python log_regression.py
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
+import scipy.optimize as opt
 
-
-def regression(theta_init,learning_rate,m,X,g,Z,Y):
-	theta = theta_init
-	diff = theta + 2
-
-	while(not all(diff < .0001)):
-		theta_old = theta
-		theta = theta - (learning_rate/m)*np.matmul(np.transpose(X), g*Z - Y)
-		diff = theta - theta_old #compare for convergance
-
-	return theta
 
 def decision_boundary(X,theta):
 
-	x = [X[:,0].item(i) for i in range(len(X))]
+	x = [X[:,1].item(i) for i in range(len(X))]
 	xVals = np.array([min(x),max(x)])
 	yVals = -1/theta[2]*(theta[1]*xVals + theta[0])
 	yVals = [yVals[0,0],yVals[0,1]]
@@ -38,13 +28,11 @@ def decision_boundary(X,theta):
 
 def plot_results(X,y,theta,theta_given):
 
-	points0 = [[X[i,0],X[i,1]] for i in range(len(X)) if y[i] == 0]
-	points1 = [[X[i,0],X[i,1]] for i in range(len(X)) if y[i] == 1]
+	points0 = [[X[i,1],X[i,2]] for i in range(len(X)) if y[i] == 0]
+	points1 = [[X[i,1],X[i,2]] for i in range(len(X)) if y[i] == 1]
 
 
 	xVals,yVals = decision_boundary(X,theta_given)
-
-
 
 	#y_prediction = [theta[1,0]*x + theta[0,0] for x in x_training]
 	plt.plot(xVals,yVals)
@@ -57,7 +45,51 @@ def plot_results(X,y,theta,theta_given):
 
 	plt.show()
 
+def sigmoid(x):
+	return 1/(1+np.exp(-x))
 
+def compJ(theta,X,y):
+	theta = np.matrix(theta)
+	X = np.matrix(X)
+	y = np.matrix(y)
+	m = np.shape(X)[0]
+	hx = sigmoid((X*theta.transpose()))
+	left = np.multiply(-y,np.log(1-hx))
+	right = np.multiply((1-y),np.log(1-hx))
+	return np.sum(left-right)/m
+
+def compGrad(theta,X,y):
+	m = np.shape(X)[0]
+	theta = np.matrix(theta)
+	X = np.matrix(X)
+	y = np.matrix(y)
+	hx = sigmoid(X*theta.transpose())
+	error = hx-y
+	gradient = (X.transpose()*error)/m
+	return gradient
+
+def opt_params(theta,X,y):
+	answer = opt.fmin_tnc(func=compJ,x0=theta,fprime=compGrad,args=(X,y))
+	return answer[0]
+
+def regression(X,y,learning_rate,theta_init):
+	theta = theta_init
+	m = np.shape(X)[0]
+	theta = np.matrix(theta)
+	X = np.matrix(X)
+	y = np.matrix(y)
+	print theta
+
+	for t in range(10):
+		theta = compGrad(theta,X,y).transpose()
+		print theta
+
+
+
+	exit()
+
+
+	return gradient
 def init():
 	#read file into list of x,y coordinates, one set of coords per line
 	reader = list(csv.reader(open("data1.txt", "rb"), delimiter=','))
@@ -66,26 +98,36 @@ def init():
 	theta_given = list(csv.reader(open("theta.txt", "rb"),delimiter=' '))
 	theta_given = np.mat(theta_given).astype('float')
 
-
-
 	X = data[:,:2]
 	y = data[:,2]
 
+	X = np.insert(X,0,1,1)
+
+
 	#set the initial parameters
 	learning_rate = 0.0001 #step size
-	theta_init = np.zeros(3) # initial theta guess
-	theta_init = np.reshape(theta_init, (3,1))
+	theta_init = np.zeros(np.shape(X)[1]) # initial theta guess
+	theta_init = np.matrix(theta_init)
 
-	m = X.size   #number of iterations of gradient across all points
-	return X, y, m, learning_rate, theta_init, theta_given
+
+
+	return X, y, learning_rate, theta_init, theta_given
 
 def main():
 
-	X,y,m,learning_rate,theta_init,theta_given = init()
+	X,y,learning_rate,theta_init,theta_given = init()
+	#plot_results(X,y,theta,theta_given)
 
-	theta = theta_init
-	#theta = regression(X,Y,m,learning_rate,theta_init)
 
-	plot_results(X,y,theta,theta_given)
+	#theta = opt_params(theta_init,X,y)
+	theta = regression(X,y,learning_rate,theta_init)
+	print theta
+	print theta_given
+	theta = theta.transpose()
+
+	plot_results(X,y,theta_given,theta)
+
+
+
 
 main()
