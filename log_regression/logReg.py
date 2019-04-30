@@ -7,7 +7,7 @@ GU Username: nmagrogan
 File Name: log_regression.py
 Preforms logarighmic regression using a vectorized approach.
 Outputs a plot of regression line and input data
-Usage :  python log_regression.py
+Usage :  python logReg.py
 
 '''
 
@@ -26,7 +26,7 @@ def decision_boundary(X,theta):
 	return xVals, yVals
 
 
-def plot_results(X,y,theta,theta_given):
+def plot_results(X,y,theta_given):
 
 	points0 = [[X[i,1],X[i,2]] for i in range(len(X)) if y[i] == 0]
 	points1 = [[X[i,1],X[i,2]] for i in range(len(X)) if y[i] == 1]
@@ -54,7 +54,7 @@ def compJ(theta,X,y):
 	y = np.matrix(y)
 	m = np.shape(X)[0]
 	hx = sigmoid((X*theta.transpose()))
-	left = np.multiply(-y,np.log(1-hx))
+	left = np.multiply(-y,np.log(hx))
 	right = np.multiply((1-y),np.log(1-hx))
 	return np.sum(left-right)/m
 
@@ -72,24 +72,6 @@ def opt_params(theta,X,y):
 	answer = opt.fmin_tnc(func=compJ,x0=theta,fprime=compGrad,args=(X,y))
 	return answer[0]
 
-def regression(X,y,learning_rate,theta_init):
-	theta = theta_init
-	m = np.shape(X)[0]
-	theta = np.matrix(theta)
-	X = np.matrix(X)
-	y = np.matrix(y)
-	print theta
-
-	for t in range(10):
-		theta = compGrad(theta,X,y).transpose()
-		print theta
-
-
-
-	exit()
-
-
-	return gradient
 def init():
 	#read file into list of x,y coordinates, one set of coords per line
 	reader = list(csv.reader(open("data1.txt", "rb"), delimiter=','))
@@ -109,25 +91,20 @@ def init():
 	theta_init = np.zeros(np.shape(X)[1]) # initial theta guess
 	theta_init = np.matrix(theta_init)
 
-
-
 	return X, y, learning_rate, theta_init, theta_given
 
 def main():
 
 	X,y,learning_rate,theta_init,theta_given = init()
-	#plot_results(X,y,theta,theta_given)
+	#plot for part 1 of assignmen
+	#plot_results(X,y,theta_given)
 
 
-	#theta = opt_params(theta_init,X,y)
-	theta = regression(X,y,learning_rate,theta_init)
-	print theta
-	print theta_given
+	theta = opt_params(theta_init,X,y)
+	theta = np.matrix(theta)
 	theta = theta.transpose()
-
-	plot_results(X,y,theta_given,theta)
-
-
+	#plots results for part 3 of assignment
+	plot_results(X,y,theta)
 
 
 main()
